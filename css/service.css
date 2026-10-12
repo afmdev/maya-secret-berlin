@@ -1,0 +1,73 @@
+/* Página de servicio: dos columnas (contenido + tarjeta de reserva), como la referencia.
+   Único CSS escrito a mano del proyecto; usa la paleta y las fuentes del tema. */
+.svc{
+	--svc-gold:var(--e-global-color-mayaerotikmassage_accent_1,#A67C3D);
+	--svc-cream:var(--e-global-color-mayaerotikmassage_accent_6,#EFE6DA);
+	--svc-line:color-mix(in srgb,var(--svc-cream) 14%,transparent);
+	--svc-fill:color-mix(in srgb,var(--svc-cream) 5%,transparent);
+	display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;
+	max-width:1340px;margin:0 auto;padding:30px 30px 100px;color:var(--svc-cream)
+}
+.svc h1{font-family:"Ovo",serif;font-size:60px;line-height:1.1;font-weight:400;margin:0 0 24px}
+.svc h2{font-family:"Ovo",serif;font-size:32px;line-height:1.2;font-weight:400;margin:0 0 16px}
+.svc p{font-size:16px;line-height:1.9;margin:0 0 20px;color:color-mix(in srgb,var(--svc-cream) 78%,transparent)}
+.svc-lead p{font-family:"Ovo",serif;font-size:22px;line-height:1.5;color:var(--svc-cream)}
+.svc-label{display:block;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+	color:var(--svc-gold);margin:0 0 12px}
+.svc hr.svc-sep{border:0;border-top:1px solid var(--svc-line);margin:44px 0}
+.svc .section-rule{margin:44px 0}
+
+.svc-list{list-style:none;margin:0;padding:0}
+.svc-list li{position:relative;padding:0 0 0 26px;margin-bottom:12px;font-size:16px;line-height:1.6}
+.svc-list li::before{content:"+";position:absolute;left:0;top:0;color:var(--svc-gold);font-weight:600}
+.svc-two{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+
+.svc-card{background:var(--svc-fill);border:1px solid var(--svc-line);border-radius:24px;padding:30px}
+.svc-price{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;padding:0}
+.svc-price>div{padding:30px}
+.svc-price>div+div{border-left:1px solid var(--svc-line)}
+.svc-row{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+	padding:16px 0;border-top:1px solid var(--svc-line);font-size:15px}
+.svc-row b{font-weight:600;color:var(--svc-gold);white-space:nowrap}
+
+.svc-side{display:flex;flex-direction:column;gap:24px;padding-left:100px}
+/* la foto se va con el scroll; reserva y pastillas se quedan pegadas.
+   Van juntas en el envoltorio: si se pegara solo la tarjeta, taparia a las pastillas. */
+.svc-sticky{position:sticky;top:60px;display:flex;flex-direction:column;gap:20px}
+.svc-sticky .svc-card{padding:26px}
+.svc-side img{width:100%;height:400px;object-fit:cover;border-radius:24px;display:block}
+.svc-stars{color:var(--svc-gold);letter-spacing:4px;text-align:center;font-size:15px}
+.svc-trust{text-align:center;font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+	color:color-mix(in srgb,var(--svc-cream) 65%,transparent);margin:8px 0 14px}
+.svc-side .svc-card h2{text-align:center;font-size:26px}
+.svc-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.svc-form label{display:block;font-size:13px;margin-bottom:6px;
+	color:color-mix(in srgb,var(--svc-cream) 70%,transparent)}
+.svc-form .wide{grid-column:1/-1}
+.svc-form input,.svc-form select,.svc-form textarea{
+	width:100%;background:transparent;border:1px solid var(--svc-line);border-radius:12px;
+	padding:13px 15px;color:var(--svc-cream);font-family:"Manrope",sans-serif;font-size:14px}
+.svc-form textarea{min-height:110px;resize:vertical}
+.svc-form ::placeholder{color:color-mix(in srgb,var(--svc-cream) 40%,transparent)}
+.svc-form select option{background:var(--e-global-color-mayaerotikmassage_accent_5,#0D0A0C)}
+.svc-form :focus-visible{outline:2px solid var(--svc-gold);outline-offset:2px}
+.svc-form .svc-submit{grid-column:1/-1;border:0;border-radius:999px;padding:16px;cursor:pointer;
+	background:var(--svc-gold);color:var(--e-global-color-mayaerotikmassage_accent_5,#0D0A0C);
+	font-family:"Manrope",sans-serif;font-size:14px;font-weight:600}
+.svc-form .svc-submit:hover{filter:brightness(1.1)}
+.svc-note{text-align:center;font-size:13px;margin:16px 0 0;
+	color:color-mix(in srgb,var(--svc-cream) 60%,transparent)}
+.svc-note a{color:var(--svc-gold)}
+
+.svc-pills{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.svc-pills a{display:block;text-align:center;padding:13px 10px;border:1px solid var(--svc-line);
+	border-radius:999px;font-size:13px;color:var(--svc-cream);text-decoration:none}
+.svc-pills a:hover{border-color:var(--svc-gold);color:var(--svc-gold)}
+
+@media(max-width:1024px){
+	.svc{grid-template-columns:1fr;gap:40px;padding:40px 20px 60px}
+	.svc h1{font-size:42px}
+	.svc-price,.svc-two,.svc-pills{grid-template-columns:1fr}
+	.svc-price>div+div{border-left:0;border-top:1px solid var(--svc-line)}
+}
+@media(max-width:600px){.svc-form{grid-template-columns:1fr}}

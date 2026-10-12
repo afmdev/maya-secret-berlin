@@ -1,0 +1,745 @@
+/* === css/theme-palettes.css ===
+   Paleta "Noir Vino". Solo color: no toca layout, tipografía ni espaciados.
+   Se aplica sobre los tokens del kit de Elementor (.elementor-kit-5 = <body>).
+
+   Roles por token (deducidos del uso real en app.css):
+     accent_1  oro         -> iconos, links, y FONDO de paneles CTA
+     accent_2  card        -> tarjetas tintadas grandes, pills
+     accent_3  surface     -> bandas de sección
+     accent_4  champán     -> eyebrows / labels (solo color)
+     accent_5  inverso     -> texto sobre accent_1, chips
+     accent_6  tinta       -> texto principal sobre el canvas
+     accent_7/8 hairlines  -> bordes y overlays
+*/
+
+body.elementor-kit-5 {
+	--e-global-color-mayaerotikmassage_accent_1: #A67C3D;
+	--e-global-color-mayaerotikmassage_accent_2: #231519;
+	--e-global-color-mayaerotikmassage_accent_3: #171014;
+	--e-global-color-mayaerotikmassage_accent_4: #C9AE84;
+	--e-global-color-mayaerotikmassage_accent_5: #0D0A0C;
+	--e-global-color-mayaerotikmassage_accent_6: #EFE6DA;
+	--e-global-color-mayaerotikmassage_accent_7: #EFE6DA1F;
+	--e-global-color-mayaerotikmassage_accent_8: #EFE6DA2E;
+	--e-global-color-mayaerotikmassage_sticky_header_bg_color: #0D0A0CD9;
+	--e-global-color-05aece8: #0D0A0CCC;
+
+	/* Estos se referencian en app.css pero nunca se definen.
+	   Los atamos a la tinta para que no dependan de la herencia. */
+	--e-global-color-mayaerotikmassage_primary_font_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h1_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h2_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h3_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h4_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h5_color: #EFE6DA;
+	--e-global-color-mayaerotikmassage_h6_color: #EFE6DA;
+
+	--mayaerotikmassage-default-bg-color: #0D0A0C;
+	--mayaerotikmassage-btn-bg-color: #A67C3D;
+	--mayaerotikmassage-btn-text-color: #0D0A0C;
+	--mayaerotikmassage-btn-hover-bg-color: #C9AE84;
+	--mayaerotikmassage-btn-hover-text-color: #0D0A0C;
+	--mayaerotikmassage-body-link-regular: #EFE6DA;
+	--mayaerotikmassage-body-link-visited: #EFE6DA;
+	--mayaerotikmassage-body-link-hover: #A67C3D;
+	--mayaerotikmassage-body-link-active: #A67C3D;
+	--mayaerotikmassage-input-border-color: #EFE6DA26;
+
+	background-color: #0D0A0C;
+}
+
+/* ---------- Superficies con color fijo en el template ----------
+   Estas reglas de app.css llevan el hex escrito a mano en vez de un token,
+   así que no seguían a la paleta. Se reapuntan a tokens. */
+
+/* Héroe: accent_6 es el color bajo la foto. Al invertirse a tinta clara
+   dejaba un fondo marfil; debe ser el canvas. */
+.elementor-19 .elementor-element.elementor-element-2610596:not(.elementor-motion-effects-element-type-background),
+.elementor-19 .elementor-element.elementor-element-2610596 > .elementor-motion-effects-container .elementor-motion-effects-layer,
+.elementor-19 .elementor-element.elementor-element-2610596 .elementor-motion-effects-container .elementor-motion-effects-layer {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_5);
+	/* La foto del export era una sesión de fisioterapia a plena luz: nada que ver
+	   con el sitio. Esta es la única panorámica en alta resolución del set y su
+	   tercio superior es casi negro, así que el H1 en crema se lee sin overlay. */
+	background-image: url("../imgs/maya-masaje-erotico-berlin-portada.jpg");
+	background-position: center center;
+	background-size: cover;
+}
+
+/* La panorámica pasa al héroe, así que la banda con parallax se queda con la
+   vertical, que quedó libre al borrar su sección. Sin repetir foto en la home. */
+.elementor-19 .elementor-element.elementor-element-c3b9fd6:not(.elementor-motion-effects-element-type-background),
+.elementor-19 .elementor-element.elementor-element-c3b9fd6 > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+	background-image: url("../imgs/placeholder-tall-bg.jpg");
+}
+
+/* Badge "Best Chiropractors": cristal menta fijo -> cristal del tema. */
+.elementor-19 .elementor-element.elementor-element-59a4889:not(.elementor-motion-effects-element-type-background),
+.elementor-19 .elementor-element.elementor-element-59a4889 .elementor-motion-effects-container .elementor-motion-effects-layer {
+	background-color: var(--e-global-color-05aece8);
+}
+
+/* Filete divisorio menta -> hairline del tema. */
+.elementor-19 .elementor-element.elementor-element-1aae2e0 {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_8);
+}
+
+/* Botón WhatsApp: amarillo fijo -> champán, con tinta oscura encima. */
+.elementor-19 .elementor-element.elementor-element-eb49bf7 .elementor-button {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_4);
+	border-color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+.elementor-19 .elementor-element.elementor-element-eb49bf7 .elementor-button,
+.elementor-19 .elementor-element.elementor-element-eb49bf7 .elementor-button * {
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
+	fill: var(--e-global-color-mayaerotikmassage_accent_5);
+}
+
+/* Acordeón de FAQ: paneles blancos fijos. */
+.elementor-19 .elementor-element.elementor-element-4ab0e08 .e-n-accordion .e-n-accordion-item .e-n-accordion-item-title {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
+	border-color: var(--e-global-color-mayaerotikmassage_accent_7);
+}
+
+/* Titular de About: el export lo capaba a 460px y partía en cuatro líneas una
+   frase que la columna aguanta en dos. Que ocupe el ancho de su contenedor. */
+.elementor-19 .elementor-element.elementor-element-2e51a9b {
+	width: 100%;
+	max-width: 100%;
+	--container-widget-width: 100%;
+}
+
+/* Commitment: fuera la columna de imagen (era un placeholder), el texto ocupa la fila. */
+.elementor-19 .elementor-element.elementor-element-74e34f7 {
+	--width: 100%;
+}
+
+/* Cinzel Decorative para el nombre de marca. Autoalojada, como el resto de
+   fuentes del export: el CDN de Google manda la IP del visitante a EE.UU. y en
+   Alemania eso ya costó indemnizaciones (LG München, 3 O 17493/20). Subset latin:
+   cubre las diéresis y la ß del alemán (U+0000-00FF). */
+@font-face {
+	font-family: 'Cinzel Decorative';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/cinzel-decorative-latin.woff2") format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Héroe: el propio widget de titular hace de columna. Dentro, cuatro hermanos
+   planos —h1, filete, h2 y entradilla— en vez de spans anidados dentro del h1. */
+.hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 22px;
+}
+
+/* Todo el bloque va calzado con el id del widget. app.css marca la tipografía
+   del titular con `.elementor-19 .elementor-element.elementor-element-31d6558
+   .elementor-heading-title` (0,3,0): una clase suelta como .hero-title (0,1,0)
+   pierde y el h1 se quedaba en Ovo, 80px y -3px de interletraje. */
+
+/* Capitales con aire, que es de donde viene el aire de marca. */
+.elementor-19 .elementor-element.elementor-element-31d6558 .hero-title {
+	margin: 0;
+	font-family: 'Cinzel Decorative', 'Ovo', serif;
+	font-weight: 400;
+	font-size: calc(var(--e-global-typography-1dc89f4-font-size, 80px) * .72);
+	text-transform: uppercase;
+	letter-spacing: .1em;
+	/* el tracking abre por la derecha: se compensa para que siga centrado */
+	text-indent: .1em;
+	line-height: 1.15;
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* Ya no cuelga del h1, así que el tamaño no puede ir en em: clamp para que
+   encoja con la pantalla sin bajar de 12px. */
+.elementor-19 .elementor-element.elementor-element-31d6558 .hero-claim {
+	margin: 0;
+	font-family: 'Ovo', serif;
+	font-size: clamp(12px, 1.5vw, 21px);
+	font-weight: 400;
+	text-transform: uppercase;
+	letter-spacing: .3em;
+	text-indent: .3em;
+	line-height: 1.4;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+.elementor-19 .elementor-element.elementor-element-31d6558 .hero-rule {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	width: min(520px, 78%);
+	margin: 4px 0;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+}
+
+/* Mismo motivo bajo el titular de About, pero alineado a la izquierda como el
+   texto de esa columna y más corto, que aquí no manda. */
+.section-rule {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	width: 100%;
+	margin: 22px 0 6px;
+	font-size: 10px;
+	line-height: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+}
+
+/* Filete que nace en el rombo y se apaga hacia los extremos. */
+.hero-rule::before,
+.hero-rule::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(to right, transparent, currentColor);
+}
+
+.hero-rule::after {
+	background: linear-gradient(to left, transparent, currentColor);
+}
+
+/* Entradilla del hero: el export no traia parrafo bajo el titular. */
+.hero-lede {
+	max-width: 680px;
+	margin: 0 auto 28px;
+	font-size: 17px;
+	line-height: 1.8;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 78%, transparent);
+}
+
+/* La columna de "Mi compromiso" traía 15vh de padding superior (135px en una
+   pantalla de 900, más en una grande) que se sumaban a los 108px de separación
+   entre secciones: el doble de aire que el resto de bloques. */
+.elementor-19 .elementor-element.elementor-element-74e34f7 {
+	--padding-top: 0px;
+}
+
+/* El panel de respuesta sube -20px para esconder sus esquinas bajo el título,
+   pero solo trae 10px/5px de padding: la primera línea se metía debajo y la
+   última rozaba el borde. Sin solape y con el mismo aire arriba y abajo. */
+.elementor-widget-n-accordion .e-n-accordion-item .e-con .e-con {
+	--margin-top: 0px;
+	--padding-top: 20px;
+	--padding-bottom: 20px;
+}
+
+/* El margen del último párrafo se sumaba al padding y desnivelaba el panel. */
+.elementor-widget-n-accordion .e-n-accordion-item .elementor-widget-text-editor p:last-child {
+	margin-bottom: 0;
+}
+
+/* La respuesta venía a 14px, más menuda que el resto del cuerpo de texto de
+   la página (16px/1.9, como los párrafos de la sección de presentación). */
+.elementor-widget-n-accordion .e-n-accordion-item .elementor-widget-text-editor {
+	font-size: 16px;
+	line-height: 1.9;
+}
+
+/* El widget trae #1f2124 de serie (pensado para panel blanco): sobre el panel
+   oscuro la pregunta se lee casi negra. */
+.elementor-widget-n-accordion {
+	--n-accordion-title-normal-color: var(--e-global-color-mayaerotikmassage_accent_6);
+	--n-accordion-title-hover-color: var(--e-global-color-mayaerotikmassage_accent_4);
+	--n-accordion-title-active-color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+/* La apertura la anima el bundle nested-accordion de Elementor, que sí se
+   carga (webpack lo pide por jspath). Lo que había aquí era una segunda
+   animación en CSS sobre ::details-content: al cerrar, el JS encogía la
+   pregunta hasta el final y entonces, al caer el atributo [open], el filete
+   de CSS saltaba otra vez al alto completo y repetía el cierre. */
+
+/* Contenedor vacío entre la FAQ y el footer: traía --margin-bottom:-100px para
+   que el footer se montara sobre la sección que antes cerraba la home. Ahora
+   está vacío, así que ese tirón se comía la última pregunta. */
+.elementor-19 .elementor-element.elementor-element-226aa78 {
+	--margin-bottom: 40px;
+}
+
+/* Pills de dolencias: cristal blanco al 60%. */
+.elementor-19 .elementor-element.elementor-element-149011a:not(.elementor-motion-effects-element-type-background),
+.elementor-19 .elementor-element.elementor-element-149011a > .elementor-motion-effects-container > .elementor-motion-effects-layer,
+.elementor-19 .elementor-element.elementor-element-149011a .elementor-motion-effects-container .elementor-motion-effects-layer {
+	background-color: var(--e-global-color-05aece8);
+}
+
+/* Submenú desplegable del nav. */
+.elementor-nav-menu--dropdown {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
+}
+
+/* Titular del héroe: accent_5 es la tinta inversa (oscura sobre oro). Sobre la
+   foto debe leerse claro, y así aguanta también fotos oscuras del cliente. */
+.elementor-19 .elementor-element.elementor-element-31d6558 .elementor-heading-title,
+.elementor-19 .elementor-element.elementor-element-31d6558 .elementor-heading-title * {
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* ---------- Interacción ----------
+   El zoom vive en .maya-secret-animation-grow:hover, es decir en el propio <img>.
+   El texto de la tarjeta es un <a> hermano, así que no lo dispara. Se sube el
+   disparador a la tarjeta entera. */
+.e-loop-item:hover .maya-secret-animation-grow {
+	transform: scale(1.1);
+}
+
+/* El titular de la tarjeta vira a oro con el mismo gesto. */
+.e-loop-item .elementor-widget-heading .elementor-heading-title {
+	transition: color .3s;
+}
+
+.e-loop-item:hover .elementor-widget-heading .elementor-heading-title {
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+}
+
+/* Las fotos descansan en blanco y negro y recuperan el color al pasar por la
+   tarjeta. Solo donde hay puntero: en táctil no hay hover y se quedarían grises.
+   La transición repite transform porque este selector gana en especificidad a
+   .maya-secret-animation-grow y, si no, anularía el transition-property del zoom. */
+@media (hover: hover) {
+	.e-loop-item .maya-secret-animation-grow {
+		filter: grayscale(1) contrast(1.06);
+		transition: transform .3s, filter .5s ease;
+	}
+
+	.e-loop-item:hover .maya-secret-animation-grow {
+		filter: grayscale(0) contrast(1);
+	}
+}
+
+/* ---------- Retícula de servicios: tarjetas a la misma altura ----------
+   Ocho fotos son 731x1024; la de "Masaje Tántrico" es 683x1024 y crecía más
+   alta, así que icono, título y descripción de esa tarjeta bajaban respecto a
+   las vecinas. Se fija la proporción y se recorta al centro. */
+.elementor-382 .elementor-element.elementor-element-54a2ac7 img {
+	aspect-ratio: 731 / 1024;
+	object-fit: cover;
+}
+
+/* La descripción ocupa una o dos líneas según el servicio: se reserva el alto
+   de dos para que el aire bajo el texto sea igual en todas las tarjetas. */
+.elementor-382 .elementor-element.elementor-element-69eb63e {
+	min-height: 2lh;
+}
+
+/* ---------- Cabecera: firma a la izquierda ----------
+   Misma letra que el h1 del hero, a cuerpo de barra. Es la marca, no un
+   enlace más: el kit tiñe de oro todo a:hover y aquí no debe pasar nada. */
+.elementor-148 .header-wordmark,
+.elementor-148 .header-wordmark:hover,
+.elementor-148 .header-wordmark:focus {
+	font-family: 'Cinzel Decorative', 'Ovo', serif;
+	font-weight: 400;
+	/* el nombre va en una línea y la columna es estrecha: el cuerpo se queda
+	   corto a propósito para no rozar el menú */
+	font-size: clamp(12px, 1.1vw, 14px);
+	text-transform: uppercase;
+	letter-spacing: .1em;
+	line-height: 1.2;
+	white-space: nowrap;
+	text-decoration: none;
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* El botón de contacto solo traía medidas por debajo de 1025px; en escritorio
+   caía al 34px del kit. Mismo cuerpo que en móvil en toda anchura, y los dos
+   colores al revés: el oro manda en reposo y se apaga bajo el ratón. */
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button {
+	font-size: 18px;
+	line-height: 1em;
+	border-radius: 6px;
+	padding: .42em;
+	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
+	fill: var(--e-global-color-mayaerotikmassage_accent_5);
+}
+
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:hover,
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:hover svg,
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus svg {
+	fill: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* El filete centrado y corto bajo un titular de sección. */
+.section-rule--center {
+	width: min(560px, 80%);
+	margin: 10px auto 28px;
+}
+
+/* ---------- Puerta de edad 18+ ----------
+   El velo que tapa la página (overflow y visibility) lo inyecta age-gate.js
+   desde <head>, que esta hoja llega demasiado tarde para eso. Aquí solo el
+   panel, que se monta ya con la hoja cargada. */
+.maya-agegate {
+	position: fixed;
+	inset: 0;
+	z-index: 2147483000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: var(--e-global-color-mayaerotikmassage_accent_5);
+	overflow-y: auto;
+}
+
+.maya-agegate__panel {
+	width: min(560px, 100%);
+	margin: auto;
+	text-align: center;
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+.maya-agegate .hero-rule {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	width: min(360px, 70%);
+	margin: 14px auto 22px;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+}
+
+.maya-agegate__brand {
+	margin: 0 0 18px;
+	font-family: 'Cinzel Decorative', 'Ovo', serif;
+	font-size: clamp(18px, 2.4vw, 26px);
+	text-transform: uppercase;
+	letter-spacing: .1em;
+	text-indent: .1em;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+.maya-agegate__title {
+	margin: 0;
+	font-family: 'Ovo', serif;
+	font-size: clamp(24px, 3.4vw, 34px);
+	font-weight: 400;
+	line-height: 1.2;
+}
+
+.maya-agegate__text {
+	margin: 0 0 14px;
+	font-size: 15px;
+	line-height: 1.7;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 80%, transparent);
+}
+
+.maya-agegate__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+	margin: 26px 0 18px;
+}
+
+.maya-agegate__btn {
+	padding: 14px 22px;
+	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_1);
+	border-radius: 8px;
+	background: var(--e-global-color-mayaerotikmassage_accent_1);
+	font-family: inherit;
+	font-size: 14px;
+	line-height: 1.2;
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
+	cursor: pointer;
+	transition: background-color .25s ease, color .25s ease;
+}
+
+.maya-agegate__btn--out {
+	border-color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 28%, transparent);
+	background: transparent;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 72%, transparent);
+}
+
+.maya-agegate__btn:hover,
+.maya-agegate__btn:focus-visible {
+	background: var(--e-global-color-mayaerotikmassage_accent_3);
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+.maya-agegate__note {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.7;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 52%, transparent);
+}
+
+/* ---------- Modal de contacto ----------
+   <dialog> nativo: el foco, Esc, el top-layer y el ::backdrop los pone el
+   navegador. Aquí solo se pinta el panel y se coreografía la caída. */
+.maya-modal {
+	width: min(560px, calc(100vw - 32px));
+	padding: 0;
+	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_7);
+	border-radius: 20px;
+	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+	box-shadow: 0 30px 80px #00000099;
+	/* cerrado: colgado por encima del borde superior de la ventana */
+	opacity: 0;
+	translate: 0 calc(-50vh - 100%);
+	transition: opacity .3s ease, translate .55s cubic-bezier(.2, .9, .25, 1),
+		display .55s allow-discrete, overlay .55s allow-discrete;
+}
+
+.maya-modal[open] {
+	opacity: 1;
+	translate: 0 0;
+}
+
+/* sin estado previo el elemento nace ya centrado y no hay caída que animar */
+@starting-style {
+	.maya-modal[open] {
+		opacity: 0;
+		translate: 0 calc(-50vh - 100%);
+	}
+}
+
+.maya-modal::backdrop {
+	background-color: #0D0A0CA6;
+	backdrop-filter: blur(10px) saturate(.85);
+	opacity: 0;
+	transition: opacity .35s ease, display .35s allow-discrete, overlay .35s allow-discrete;
+}
+
+.maya-modal[open]::backdrop {
+	opacity: 1;
+}
+
+@starting-style {
+	.maya-modal[open]::backdrop {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.maya-modal,
+	.maya-modal::backdrop {
+		transition-duration: .01ms;
+	}
+}
+
+.maya-modal__inner {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 18px;
+	padding: 52px 36px 42px;
+	text-align: center;
+}
+
+.maya-modal .maya-modal__close {
+	position: absolute;
+	top: 14px;
+	right: 16px;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+	border: 0;
+	background: none;
+	font-size: 24px;
+	line-height: 1;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 55%, transparent);
+	cursor: pointer;
+	transition: color .3s ease;
+}
+
+.maya-modal .maya-modal__close:hover,
+.maya-modal .maya-modal__close:focus {
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+	background: none;
+}
+
+/* Mismas capitales con aire que el héroe. */
+.maya-modal__title {
+	margin: 0;
+	font-family: 'Ovo', serif;
+	font-size: clamp(17px, 2.2vw, 24px);
+	text-transform: uppercase;
+	letter-spacing: .14em;
+	line-height: 1.5;
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* El filete del héroe va calzado con el id de su widget: aquí su medida. */
+.maya-modal .hero-rule {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	width: 100%;
+	margin: 2px 0 4px;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_1);
+}
+
+.maya-modal__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 14px;
+}
+
+/* .elementor-kit-5 .elementor-button pesa (0,2,0): el botón se calza con
+   .maya-modal para empatar y ganar por orden de hoja. */
+.maya-modal .maya-modal__btn {
+	display: inline-flex;
+	padding: 11px 15px;
+	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_8);
+	background-color: var(--e-global-color-mayaerotikmassage_accent_5);
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+	transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+}
+
+.maya-modal .maya-modal__btn--wa {
+	border-color: var(--e-global-color-mayaerotikmassage_accent_4);
+	background-color: var(--e-global-color-mayaerotikmassage_accent_4);
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
+}
+
+.maya-modal .maya-modal__btn:hover,
+.maya-modal .maya-modal__btn:focus {
+	border-color: var(--e-global-color-mayaerotikmassage_accent_1);
+	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
+}
+
+.maya-modal .elementor-button .elementor-button-content-wrapper {
+	justify-content: center;
+}
+
+/* ---- Pie: firma y legales -------------------------------------------- */
+
+/* Donde antes iba el logotipo blanco: el nombre en la misma letra del héroe,
+   a cuerpo de pie. */
+/* La pestaña del nombre se sube 83px para soldarse al panel del pie; si el
+   bloque mide menos que ese tiro (pasa por debajo de 1025px, donde la letra
+   encoge), queda una franja oscura entre ambos. Se le fija el alto del tiro. */
+.main-footer .mayaerotikmassage-cp-big-top {
+	/* 1px de más: el recorte cae en subpíxel y si no, asoma un pelo oscuro. */
+	min-height: 84px;
+}
+
+/* Por debajo de 1025px la pestaña ocupa todo el ancho del pie: la silueta la
+   marca su recorte, y el radio del panel asomaría como muescas oscuras. */
+@media (max-width: 1024px) {
+	.main-footer .elementor-element-8ee64ec {
+		border-radius: 0;
+	}
+}
+
+/* En tablet el panel acolcha 20px a los lados; la pestaña los recupera para
+   llegar a los bordes. */
+@media (max-width: 1024px) and (min-width: 768px) {
+	.main-footer .mayaerotikmassage-cp-big-top {
+		margin-inline: -20px;
+	}
+}
+
+.footer-wordmark {
+	width: 100%;
+	text-align: center;
+	/* mismo tono que el párrafo de cola, para que el pie hable a una voz */
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_5) 72%, transparent);
+}
+
+/* El kit tiñe de oro cualquier a:hover; aquí el nombre no responde al ratón. */
+.main-footer .footer-wordmark a,
+.main-footer .footer-wordmark a:hover,
+.main-footer .footer-wordmark a:focus {
+	font-family: 'Cinzel Decorative', 'Ovo', serif;
+	font-weight: 400;
+	font-size: clamp(26px, 3.4vw, 42px);
+	text-transform: uppercase;
+	letter-spacing: .1em;
+	/* el tracking abre por la derecha: se compensa para que siga centrado */
+	text-indent: .1em;
+	line-height: 1.15;
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Crédito de autoría, centrado: marca encima, nombre debajo. Misma letra y
+   mismo cuerpo que el copyright y los legales de su misma fila. */
+.main-footer .footer-credit,
+.main-footer .footer-credit:hover,
+.main-footer .footer-credit:focus {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	text-decoration: none;
+	font-family: var(--e-global-typography-b8ac9fe-font-family), sans-serif;
+	font-size: var(--e-global-typography-b8ac9fe-font-size);
+	font-weight: var(--e-global-typography-b8ac9fe-font-weight);
+	line-height: var(--e-global-typography-b8ac9fe-line-height);
+	letter-spacing: var(--e-global-typography-b8ac9fe-letter-spacing);
+	color: var(--e-global-color-mayaerotikmassage_accent_2);
+}
+
+.footer-credit img {
+	width: 42px;
+	height: auto;
+	/* el kit redondea toda imagen a 24px y se comía las esquinas del logotipo */
+	border-radius: 0;
+}
+
+/* La tercera columna del pie no traía dirección ni alineación propias. */
+.elementor-1163 .elementor-element.elementor-element-6412e48.footer-legal {
+	--flex-direction: row;
+	--justify-content: flex-end;
+	--align-items: center;
+	--gap: 18px 18px;
+	--row-gap: 18px;
+	--column-gap: 18px;
+}
+
+@media (max-width: 767px) {
+	.elementor-1163 .elementor-element.elementor-element-6412e48.footer-legal {
+		--justify-content: center;
+	}
+}
+
+/* Párrafo de cola del pie: cumple el aviso legal y sostiene el enlazado
+   interno a los nueve rituales. Letra pequeña, que aquí no manda. */
+.footer-seo {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 20px;
+	text-align: center;
+	font-size: 12px;
+	line-height: 1.7;
+	letter-spacing: .01em;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_5) 72%, transparent);
+}
+
+.footer-seo a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_5) 28%, transparent);
+}
+
+.footer-seo a:hover,
+.footer-seo a:focus {
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+	border-bottom-color: currentColor;
+}
