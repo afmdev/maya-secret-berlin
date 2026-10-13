@@ -11,13 +11,36 @@
 	dialog.innerHTML = '<div class="maya-modal__inner svc-lightbox__inner">'
 		+ '<div class="svc-lightbox__frame">'
 		+ '<button type="button" class="maya-modal__close" aria-label="Cerrar">&#215;</button>'
+		+ '<button type="button" class="svc-lightbox__nav" data-paso="-1" aria-label="Foto anterior">&#8249;</button>'
+		+ '<button type="button" class="svc-lightbox__nav" data-paso="1" aria-label="Foto siguiente">&#8250;</button>'
 		+ '<img alt=""></div></div>';
 	const full = dialog.querySelector('img');
-	// el dialog cubre la ventana: cualquier clic que no sea la foto, cierra
+	document.body.append(dialog);
+
+	// Con varias fotos el visor se recorre como una galería; con una sola, las
+	// flechas sobran.
+	const fotos = [...photos].map(p => p.querySelector('img')).filter(Boolean);
+	if (fotos.length < 2) dialog.querySelectorAll('.svc-lightbox__nav').forEach(b => b.remove());
+	let actual = 0;
+
+	const muestra = i => {
+		actual = (i + fotos.length) % fotos.length;
+		const img = fotos[actual];
+		full.src = img.currentSrc || img.src;
+		full.alt = img.alt;
+	};
+
 	dialog.addEventListener('click', e => {
+		const flecha = e.target.closest('.svc-lightbox__nav');
+		if (flecha) return muestra(actual + Number(flecha.dataset.paso));
+		// el dialog cubre la ventana: cualquier clic que no sea la foto, cierra
 		if (e.target !== full) dialog.close();
 	});
-	document.body.append(dialog);
+
+	dialog.addEventListener('keydown', e => {
+		if (e.key === 'ArrowLeft') muestra(actual - 1);
+		else if (e.key === 'ArrowRight') muestra(actual + 1);
+	});
 
 	photos.forEach(photo => {
 		const img = photo.querySelector('img');
@@ -32,8 +55,7 @@
 		photo.append(btn);
 		// toda la foto abre el visor; el botón solo da la pista visual y el teclado
 		photo.addEventListener('click', () => {
-			full.src = img.currentSrc || img.src;
-			full.alt = img.alt;
+			muestra(fotos.indexOf(img));
 			dialog.showModal();
 		});
 	});

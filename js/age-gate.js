@@ -31,10 +31,11 @@
 		gate.className = 'maya-agegate';
 		gate.setAttribute('role', 'dialog');
 		gate.setAttribute('aria-modal', 'true');
+		gate.setAttribute('tabindex', '-1');
 		gate.setAttribute('aria-labelledby', 'maya-agegate-title');
 		gate.innerHTML = [
 			'<div class="maya-agegate__panel">',
-			'<p class="maya-agegate__brand">Maya Secret</p>',
+			'<p class="maya-agegate__brand">Maya Erotik Massage Berlin</p>',
 			'<h1 class="maya-agegate__title" id="maya-agegate-title">Solo para mayores de 18 años</h1>',
 			'<div class="hero-rule" aria-hidden="true">&#9670;</div>',
 			'<p class="maya-agegate__text">Esta web contiene contenido erótico dirigido exclusivamente a personas adultas. Al entrar confirmas que tienes 18 años o más y que deseas verlo.</p>',
@@ -42,7 +43,7 @@
 			'<button type="button" class="maya-agegate__btn" data-agegate="in">Tengo 18 años o más</button>',
 			'<button type="button" class="maya-agegate__btn maya-agegate__btn--out" data-agegate="out">Salir</button>',
 			'</div>',
-			'<p class="maya-agegate__note">Maya Secret es masaje erótico con cita previa: no se ofrecen servicios sexuales.</p>',
+			'<p class="maya-agegate__note">Maya solo ofrece masajes con cita previa en Berlin. Aquí no se ofrecen servicios sexuales.</p>',
 			'</div>'
 		].join('');
 		document.body.appendChild(gate);
@@ -67,7 +68,9 @@
 			(document.activeElement === entrar ? salir : entrar).focus();
 		});
 
-		entrar.focus();
+		// El foco entra por el diálogo, no por el botón: el lector de pantalla lee
+		// el aviso entero y ningún navegador dibuja su anillo sobre el oro.
+		gate.focus();
 	}
 
 	if (document.readyState === 'loading') {

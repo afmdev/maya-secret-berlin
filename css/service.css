@@ -738,3 +738,40 @@
 		aspect-ratio: 4/5
 	}
 }
+
+/* Flechas del visor: mismo botón redondo que las de la galería. */
+.svc-lightbox .svc-lightbox__nav {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	transform: translateY(-50%);
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+	font-size: 26px;
+	line-height: 1;
+	border-radius: 999px;
+	color: var(--svc-cream);
+	background: color-mix(in srgb, #0D0A0C 45%, transparent);
+	border: 1px solid color-mix(in srgb, var(--svc-cream) 25%, transparent);
+	backdrop-filter: blur(6px);
+	transition: color .3s ease, border-color .3s ease, background-color .3s ease
+}
+
+.svc-lightbox .svc-lightbox__nav[data-paso="-1"] {
+	left: 14px
+}
+
+.svc-lightbox .svc-lightbox__nav[data-paso="1"] {
+	right: 14px
+}
+
+.svc-lightbox .svc-lightbox__nav:hover,
+.svc-lightbox .svc-lightbox__nav:focus-visible {
+	color: var(--svc-gold);
+	border-color: var(--svc-gold);
+	background: color-mix(in srgb, #0D0A0C 65%, transparent)
+}

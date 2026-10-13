@@ -426,25 +426,25 @@ button:focus-visible,
 	color: var(--e-global-color-mayaerotikmassage_accent_1);
 }
 
-.maya-agegate__brand {
+.maya-agegate .maya-agegate__brand {
 	margin: 0 0 18px;
 	font-family: 'Cinzel Decorative', 'Ovo', serif;
-	font-size: clamp(18px, 2.4vw, 26px);
+	font-size: clamp(30px, 4.6vw, 46px);
 	text-transform: uppercase;
 	letter-spacing: .1em;
 	text-indent: .1em;
 	color: var(--e-global-color-mayaerotikmassage_accent_4);
 }
 
-.maya-agegate__title {
+.maya-agegate .maya-agegate__title {
 	margin: 0;
 	font-family: 'Ovo', serif;
-	font-size: clamp(24px, 3.4vw, 34px);
+	font-size: clamp(17px, 2.1vw, 24px);
 	font-weight: 400;
-	line-height: 1.2;
+	line-height: 1.35;
 }
 
-.maya-agegate__text {
+.maya-agegate .maya-agegate__text {
 	margin: 0 0 14px;
 	font-size: 15px;
 	line-height: 1.7;
@@ -459,7 +459,7 @@ button:focus-visible,
 	margin: 26px 0 18px;
 }
 
-.maya-agegate__btn {
+.maya-agegate .maya-agegate__btn {
 	padding: 14px 22px;
 	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_1);
 	border-radius: 8px;
@@ -472,30 +472,32 @@ button:focus-visible,
 	transition: background-color .25s ease, color .25s ease;
 }
 
-.maya-agegate__btn--out {
+.maya-agegate .maya-agegate__btn--out {
 	border-color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 28%, transparent);
 	background: transparent;
 	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 72%, transparent);
 }
 
-.maya-agegate__btn:hover,
-.maya-agegate__btn:focus-visible {
+.maya-agegate .maya-agegate__btn:hover,
+.maya-agegate .maya-agegate__btn:focus-visible {
 	background: var(--e-global-color-mayaerotikmassage_accent_3);
 	color: var(--e-global-color-mayaerotikmassage_accent_6);
 }
 
-/* El botón recibe foco al montar la puerta: fuera el anillo azul del navegador,
-   dentro uno de la casa solo para quien navega con teclado. */
-.maya-agegate__btn:focus {
+/* Al montar, el foco va al diálogo y no al botón: así ningún navegador pinta
+   su anillo sobre el oro. El de teclado se queda, en crema y sin color-mix,
+   que Safari descarta la regla entera si no lo entiende y saca el suyo azul. */
+.maya-agegate:focus,
+.maya-agegate .maya-agegate__btn:focus {
 	outline: none;
 }
 
-.maya-agegate__btn:focus-visible {
-	outline: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 55%, transparent);
+.maya-agegate .maya-agegate__btn:focus-visible {
+	outline: 1px solid rgba(239, 230, 218, .55);
 	outline-offset: 3px;
 }
 
-.maya-agegate__note {
+.maya-agegate .maya-agegate__note {
 	margin: 0;
 	font-size: 12px;
 	line-height: 1.7;
@@ -839,4 +841,50 @@ button:focus-visible,
 	.elementor-148 .elementor-element-e35f872 {
 		justify-self: end;
 	}
+}
+
+/* ---- Cola SEO de la página de masajes --------------------------------- */
+
+/* Va en el canvas, bajo la banda de las tarjetas: cuerpo pequeño y tinta al
+   68 %, para que informe sin disputarle la página al listado. */
+.masajes-seo {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 0 24px 12vh;
+	font-size: 14px;
+	line-height: 1.85;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 68%, transparent);
+}
+
+/* El kit da a h2/h3 60 y 34px: aquí es texto de cola, no un titular de banda. */
+.masajes-seo h2 {
+	margin: 0 0 18px;
+	font-size: clamp(24px, 3vw, 32px);
+	line-height: 1.25;
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+.masajes-seo h3 {
+	margin: 30px 0 8px;
+	font-size: clamp(17px, 2vw, 20px);
+	line-height: 1.3;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+.masajes-seo p {
+	margin: 0 0 14px;
+}
+
+/* Mismo trato que el párrafo del pie: el subrayado marca el enlace sin que
+   el oro del kit pique el texto corrido. */
+.masajes-seo a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_4) 45%, transparent);
+}
+
+.masajes-seo a:hover,
+.masajes-seo a:focus {
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+	border-bottom-color: currentColor;
 }
