@@ -11,8 +11,11 @@
 	--mega-pad:16px;
 	--mega-row:50px;
 	--mega-h:230px;
-	--sub-gap:28px;
+	--sub-gap:16px;
 	left:50% !important;
+	/* top:100% es el borde inferior de la fila de cabecera; se sube para que el
+	   panel quede justo bajo el menú y no a media cabecera. */
+	top:calc(100% - 24px) !important;
 	margin-left:0 !important;
 	--sub-x:-50%;
 	transform:translateX(var(--sub-x));
@@ -113,7 +116,10 @@
 	position:absolute;
 	inset:0;
 	background-size:cover;
-	background-position:center;
+	/* Las fotos son verticales en un marco apaisado: el recorte centrado cortaba
+	   la cabeza. Se ancla arriba, y el zoom crece hacia abajo (transform-origin). */
+	background-position:center 20%;
+	transform-origin:50% 0;
 }
 
 .elementor-nav-menu--main .maya-mega > li:hover .maya-mega__frame,

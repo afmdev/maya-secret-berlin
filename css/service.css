@@ -51,10 +51,10 @@
 .svc-form ::placeholder{color:color-mix(in srgb,var(--svc-cream) 40%,transparent)}
 .svc-form select option{background:var(--e-global-color-mayaerotikmassage_accent_5,#0D0A0C)}
 .svc-form :focus-visible{outline:2px solid var(--svc-gold);outline-offset:2px}
-.svc-form .svc-submit{grid-column:1/-1;border:0;border-radius:999px;padding:16px;cursor:pointer;
+.svc-card .svc-submit{grid-column:1/-1;width:100%;border:1px solid transparent;border-radius:999px;padding:16px;cursor:pointer;
 	background:var(--svc-gold);color:var(--e-global-color-mayaerotikmassage_accent_5,#0D0A0C);
 	font-family:"Manrope",sans-serif;font-size:14px;font-weight:600}
-.svc-form .svc-submit:hover{filter:brightness(1.1)}
+.svc-card .svc-submit:hover{filter:brightness(1.1)}
 .svc-note{text-align:center;font-size:13px;margin:16px 0 0;
 	color:color-mix(in srgb,var(--svc-cream) 60%,transparent)}
 .svc-note a{color:var(--svc-gold)}
@@ -82,7 +82,7 @@
 	transition:transform .9s cubic-bezier(.65,0,.35,1);
 	animation:svc-gal-auto 25s infinite}
 .svc-gal:hover .svc-gal-track{animation-play-state:paused}
-.svc-gal-track img{flex:none;width:20%;height:100%;object-fit:cover;display:block;border-radius:0}
+.svc-gal-track img{flex:none;width:20%;height:100%;object-fit:cover;object-position:center 20%;display:block;border-radius:0}
 @keyframes svc-gal-auto{
 	0%,16%{transform:translateX(0)}
 	20%,36%{transform:translateX(-20%)}
@@ -116,7 +116,35 @@
 .svc-gal input:focus-visible~.svc-gal-nav label{outline:2px solid var(--svc-gold);outline-offset:2px}
 /* sin hover (movil/tactil) las flechas se quedan siempre a la vista */
 @media(hover:none){.svc-gal-nav label{opacity:1;transform:none}}
+/* ---------- Entrada y Ken Burns de las fotos ----------
+   Cortinilla de izquierda a derecha al cargar + zoom lento continuo, como las
+   tarjetas de la home. Va en tiempo, no atada al scroll: estas dos fotos están
+   arriba del todo de la página y con view() ya saldrían reveladas. */
+@keyframes svc-wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes svc-kenburns{from{transform:scale(1)}to{transform:scale(1.12)}}
+
+/* La foto de la columna derecha de cada masaje: cortinilla + Ken Burns.
+   transform-origin casa con el object-position del recorte para que al crecer
+   no se vuelva a comer la cabeza. */
+.svc-side > img{
+	transform-origin:50% 20%;
+	animation:svc-wipe 1.1s cubic-bezier(.65,0,.35,1) .15s both,
+	          svc-kenburns 20s ease-in-out 1.2s infinite alternate;
+}
+
+/* La galería de "Sobre Maya": la cortinilla va en el marco y el Ken Burns en
+   cada foto (el track ya usa transform para deslizar). */
+.svc-gal{
+	animation:svc-wipe 1.1s cubic-bezier(.65,0,.35,1) .15s both;
+}
+
+.svc-gal-track img{
+	transform-origin:50% 20%;
+	animation:svc-kenburns 20s ease-in-out infinite alternate;
+}
+
 @media(prefers-reduced-motion:reduce){
 	.svc-gal-track{animation:none;transition:none}
 	.svc-gal-nav label{opacity:1;transform:none}
+	.svc-side > img,.svc-gal,.svc-gal-track img{animation:none;clip-path:none}
 }
