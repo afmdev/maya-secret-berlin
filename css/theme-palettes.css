@@ -96,6 +96,16 @@ body.elementor-kit-5 {
 	fill: var(--e-global-color-mayaerotikmassage_accent_5);
 }
 
+/* El anillo de foco del navegador llega en azul de sistema y rompe la paleta.
+   No se quita: se repinta en oro, que el teclado tiene que ver dónde está. */
+a:focus-visible,
+button:focus-visible,
+.elementor-button:focus-visible,
+[role="button"]:focus-visible {
+	outline: 2px solid var(--e-global-color-mayaerotikmassage_accent_1);
+	outline-offset: 2px;
+}
+
 /* Acordeón de FAQ: paneles blancos fijos. */
 .elementor-19 .elementor-element.elementor-element-4ab0e08 .e-n-accordion .e-n-accordion-item .e-n-accordion-item-title {
 	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
@@ -352,27 +362,27 @@ body.elementor-kit-5 {
 }
 
 /* El botón de contacto solo traía medidas por debajo de 1025px; en escritorio
-   caía al 34px del kit. Mismo cuerpo que en móvil en toda anchura, y los dos
-   colores al revés: el oro manda en reposo y se apaga bajo el ratón. */
+   caía al 34px del kit. Mismo cuerpo que en móvil en toda anchura, y los
+   mismos colores que el botón del hero: champán en reposo, oro bajo el ratón. */
 .elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button {
 	font-size: 18px;
 	line-height: 1em;
 	border-radius: 6px;
 	padding: .42em;
-	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
+	background-color: var(--e-global-color-mayaerotikmassage_accent_4);
 	color: var(--e-global-color-mayaerotikmassage_accent_5);
 	fill: var(--e-global-color-mayaerotikmassage_accent_5);
 }
 
 .elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:hover,
-.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus {
-	background-color: var(--e-global-color-mayaerotikmassage_accent_3);
-	color: var(--e-global-color-mayaerotikmassage_accent_6);
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus-visible {
+	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
+	color: var(--e-global-color-mayaerotikmassage_accent_5);
 }
 
 .elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:hover svg,
-.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus svg {
-	fill: var(--e-global-color-mayaerotikmassage_accent_6);
+.elementor-148 .elementor-element.elementor-element-bb9f07a .elementor-button:focus-visible svg {
+	fill: var(--e-global-color-mayaerotikmassage_accent_5);
 }
 
 /* El filete centrado y corto bajo un titular de sección. */
@@ -474,6 +484,17 @@ body.elementor-kit-5 {
 	color: var(--e-global-color-mayaerotikmassage_accent_6);
 }
 
+/* El botón recibe foco al montar la puerta: fuera el anillo azul del navegador,
+   dentro uno de la casa solo para quien navega con teclado. */
+.maya-agegate__btn:focus {
+	outline: none;
+}
+
+.maya-agegate__btn:focus-visible {
+	outline: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 55%, transparent);
+	outline-offset: 3px;
+}
+
 .maya-agegate__note {
 	margin: 0;
 	font-size: 12px;
@@ -572,11 +593,28 @@ body.elementor-kit-5 {
 .maya-modal__title {
 	margin: 0;
 	font-family: 'Ovo', serif;
-	font-size: clamp(17px, 2.2vw, 24px);
+	font-size: clamp(22px, 3vw, 30px);
 	text-transform: uppercase;
-	letter-spacing: .14em;
-	line-height: 1.5;
+	letter-spacing: .2em;
+	line-height: 1.4;
 	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+/* La frase de cita va en la letra del cuerpo: no compite con el nombre. */
+.maya-modal__lead {
+	margin: -8px 0 0;
+	font-size: clamp(13px, 1.6vw, 16px);
+	line-height: 1.6;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 80%, transparent);
+}
+
+/* Aviso de edad bajo los botones: letra pequeña, que aquí no manda. */
+.maya-modal__note {
+	margin: -4px 0 0;
+	font-size: 12px;
+	line-height: 1.6;
+	letter-spacing: .02em;
+	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 55%, transparent);
 }
 
 /* El filete del héroe va calzado con el id de su widget: aquí su medida. */
@@ -604,16 +642,11 @@ body.elementor-kit-5 {
 .maya-modal .maya-modal__btn {
 	display: inline-flex;
 	padding: 11px 15px;
-	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_8);
-	background-color: var(--e-global-color-mayaerotikmassage_accent_5);
-	color: var(--e-global-color-mayaerotikmassage_accent_6);
-	transition: background-color .3s ease, border-color .3s ease, color .3s ease;
-}
-
-.maya-modal .maya-modal__btn--wa {
-	border-color: var(--e-global-color-mayaerotikmassage_accent_4);
+	/* Los dos pesan igual: ni WhatsApp ni teléfono es la vía principal. */
+	border: 1px solid var(--e-global-color-mayaerotikmassage_accent_4);
 	background-color: var(--e-global-color-mayaerotikmassage_accent_4);
 	color: var(--e-global-color-mayaerotikmassage_accent_5);
+	transition: background-color .3s ease, border-color .3s ease, color .3s ease;
 }
 
 .maya-modal .maya-modal__btn:hover,

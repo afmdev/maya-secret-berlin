@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 16" width="1200" height="16" role="presentation" style="color:#A67C3D">
+	<defs>
+		<linearGradient id="sepL" gradientUnits="userSpaceOnUse" x1="0" x2="572" y1="0" y2="0">
+			<stop offset="0" stop-color="currentColor" stop-opacity="0"/>
+			<stop offset="1" stop-color="currentColor" stop-opacity=".95"/>
+		</linearGradient>
+		<linearGradient id="sepR" gradientUnits="userSpaceOnUse" x1="1200" x2="628" y1="0" y2="0">
+			<stop offset="0" stop-color="currentColor" stop-opacity="0"/>
+			<stop offset="1" stop-color="currentColor" stop-opacity=".95"/>
+		</linearGradient>
+	</defs>
+	<rect x="0" y="7.5" width="572" height="1" fill="url(#sepL)"/>
+	<rect x="628" y="7.5" width="572" height="1" fill="url(#sepR)"/>
+	<path d="M600 2l6 6-6 6-6-6z" fill="currentColor"/>
+</svg>

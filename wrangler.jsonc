@@ -1,0 +1,16 @@
+{
+  "name": "mayaerotikmassage",
+  "compatibility_date": "2026-10-13",
+  // Sitio estático servido por Workers Static Assets: no hace falta hosting
+  // ni script de Worker. Si no hay asset que coincida -> 404.
+  "assets": {
+    "directory": ".",
+    "html_handling": "auto-trailing-slash"
+  },
+  // custom_domain exige coincidencia exacta de hostname, por eso van los dos.
+  // El deploy crea el Custom Domain y los registros DNS en la zona.
+  "routes": [
+    { "pattern": "www.mayaerotikmassage.com", "custom_domain": true },
+    { "pattern": "mayaerotikmassage.com", "custom_domain": true }
+  ]
+}

@@ -71,3 +71,52 @@
 	.svc-price>div+div{border-left:0;border-top:1px solid var(--svc-line)}
 }
 @media(max-width:600px){.svc-form{grid-template-columns:1fr}}
+
+/* Galeria de la columna derecha: 100% CSS. Autoplay por @keyframes; las flechas
+   son radios ocultos y al marcar uno se corta la animacion (modo manual).
+   ponytail: si el usuario pulsa una flecha mientras el autoplay va por otra foto,
+   salta al vecino de la foto 1; para seguir la posicion real haria falta JS. */
+.svc-gal{position:relative;border-radius:24px;overflow:hidden;height:400px}
+.svc-gal input{position:absolute;width:1px;height:1px;opacity:0;margin:0}
+.svc-gal-track{display:flex;width:500%;height:100%;
+	transition:transform .9s cubic-bezier(.65,0,.35,1);
+	animation:svc-gal-auto 25s infinite}
+.svc-gal:hover .svc-gal-track{animation-play-state:paused}
+.svc-gal-track img{flex:none;width:20%;height:100%;object-fit:cover;display:block;border-radius:0}
+@keyframes svc-gal-auto{
+	0%,16%{transform:translateX(0)}
+	20%,36%{transform:translateX(-20%)}
+	40%,56%{transform:translateX(-40%)}
+	60%,76%{transform:translateX(-60%)}
+	80%,96%{transform:translateX(-80%)}
+	100%{transform:translateX(0)}
+}
+.svc-gal:has(input:checked) .svc-gal-track{animation:none}
+#svc-gal-1:checked~.svc-gal-track{transform:translateX(0)}
+#svc-gal-2:checked~.svc-gal-track{transform:translateX(-20%)}
+#svc-gal-3:checked~.svc-gal-track{transform:translateX(-40%)}
+#svc-gal-4:checked~.svc-gal-track{transform:translateX(-60%)}
+#svc-gal-5:checked~.svc-gal-track{transform:translateX(-80%)}
+.svc-gal-nav{position:absolute;inset:0;display:none;align-items:center;
+	justify-content:space-between;padding:0 14px;pointer-events:none}
+.svc-gal:not(:has(input:checked)) .svc-gal-nav[data-n="1"],
+#svc-gal-1:checked~.svc-gal-nav[data-n="1"],
+#svc-gal-2:checked~.svc-gal-nav[data-n="2"],
+#svc-gal-3:checked~.svc-gal-nav[data-n="3"],
+#svc-gal-4:checked~.svc-gal-nav[data-n="4"],
+#svc-gal-5:checked~.svc-gal-nav[data-n="5"]{display:flex}
+.svc-gal-nav label{pointer-events:auto;cursor:pointer;width:42px;height:42px;line-height:38px;
+	display:grid;place-items:center;border-radius:999px;font-size:26px;
+	color:var(--svc-cream);background:color-mix(in srgb,#0D0A0C 45%,transparent);
+	border:1px solid color-mix(in srgb,var(--svc-cream) 25%,transparent);
+	backdrop-filter:blur(6px);opacity:0;transform:scale(.9);
+	transition:opacity .4s ease,transform .4s ease,color .3s ease,border-color .3s ease}
+.svc-gal:hover .svc-gal-nav label,.svc-gal:focus-within .svc-gal-nav label{opacity:1;transform:scale(1)}
+.svc-gal-nav label:hover{color:var(--svc-gold);border-color:var(--svc-gold)}
+.svc-gal input:focus-visible~.svc-gal-nav label{outline:2px solid var(--svc-gold);outline-offset:2px}
+/* sin hover (movil/tactil) las flechas se quedan siempre a la vista */
+@media(hover:none){.svc-gal-nav label{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+	.svc-gal-track{animation:none;transition:none}
+	.svc-gal-nav label{opacity:1;transform:none}
+}

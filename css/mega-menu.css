@@ -1,0 +1,201 @@
+/* === css/mega-menu.css ===
+   Mega menú "Masajes": rejilla 3x3 de enlaces + panel de foto a la derecha.
+   Al pasar por cada masaje aparece su foto con zoom lento in/out.
+   Sin JS. SmartMenus posiciona el sub-menú con estilos inline (left, margin-left,
+   width), de ahí los !important. */
+
+/* El selector largo es para ganar en especificidad a app.css, que fija
+   inset-inline-start en los sub-menús de los li que no son el primero. */
+.elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-nav-menu > li > ul.maya-mega{
+	--mega-shot-w:220px;
+	--mega-pad:16px;
+	--mega-row:50px;
+	--mega-h:230px;
+	--sub-gap:28px;
+	left:50% !important;
+	margin-left:0 !important;
+	--sub-x:-50%;
+	transform:translateX(var(--sub-x));
+	width:min(1160px,calc(100vw - 48px)) !important;
+	min-width:0 !important;
+	max-width:none !important;
+	/* El sobrante vertical va al padding del ul: así las filas quedan juntas
+	   y centradas, y la foto conserva alto (--mega-h). */
+	padding:calc((var(--mega-h) - var(--mega-row) * 3) / 2) calc(var(--mega-shot-w) + var(--mega-pad) * 2) calc((var(--mega-h) - var(--mega-row) * 3) / 2) var(--mega-pad) !important;
+}
+
+/* Centrado en la ventana: se quita el position:relative de toda la cadena
+   (li, ul, widget y contenedor) para que el panel se posicione contra la fila
+   de la cabecera, que ocupa el ancho de la ventana. Solo en escritorio: por
+   debajo de 1025px manda el menú desplegable, que sí necesita su contenedor. */
+@media (min-width:1025px){
+	.elementor-nav-menu--main .elementor-nav-menu > li:has(> .maya-mega),
+	.elementor-nav-menu--main .elementor-nav-menu:has(.maya-mega),
+	.elementor-widget-nav-menu:has(.maya-mega),
+	.e-con:has(> .elementor-widget-nav-menu .maya-mega){
+		position:static;
+	}
+}
+
+/* Dos filetes verticales entre columnas, mismo dorado degradado que el separador del hero.
+   Van en el ul (no en los li) para que la línea sea continua entre filas;
+   origin:content-box ancla los % al área de los enlaces, no al hueco de la foto. */
+.elementor-nav-menu--main .maya-mega{
+	background-image:
+		linear-gradient(to bottom,rgba(166,124,61,0),rgba(166,124,61,.5) 50%,rgba(166,124,61,0)),
+		linear-gradient(to bottom,rgba(166,124,61,0),rgba(166,124,61,.5) 50%,rgba(166,124,61,0));
+	background-origin:content-box;
+	background-size:1px 100%;
+	background-position:33.333% center,66.666% center;
+	background-repeat:no-repeat;
+}
+
+.elementor-nav-menu--main .maya-mega > li{
+	border:0 !important;
+	position:static;
+	float:left;
+	width:33.333%;
+	height:var(--mega-row);
+}
+
+.elementor-nav-menu--main .maya-mega > li > a{
+	display:flex;
+	align-items:center;
+	height:100%;
+	gap:8px;
+	border-radius:4px !important;
+	border-inline-start:0 !important;
+	padding:3px 10px !important;
+	line-height:1.3;
+	transition:background-color .25s ease,color .25s ease;
+}
+
+/* Florecilla del logo delante de cada masaje */
+.elementor-nav-menu--main .maya-mega > li > a::before{
+	content:"";
+	flex:0 0 auto;
+	width:16px;
+	height:16px;
+	background:url(../imgs/flor.svg) center/contain no-repeat;
+	opacity:.7;
+	transition:opacity .25s ease;
+}
+
+.elementor-nav-menu--main .maya-mega > li > a:hover::before,
+.elementor-nav-menu--main .maya-mega > li > a:focus::before,
+.elementor-nav-menu--main .maya-mega > li > a.highlighted::before{
+	opacity:1;
+}
+
+/* app.css pinta el hover de los sub-items en gris; aquí va la paleta */
+.elementor-nav-menu--main .maya-mega > li > a:hover,
+.elementor-nav-menu--main .maya-mega > li > a:focus,
+.elementor-nav-menu--main .maya-mega > li > a.highlighted{
+	background-color:var(--e-global-color-mayaerotikmassage_accent_2,#231519) !important;
+	color:var(--e-global-color-mayaerotikmassage_accent_4,#C9AE84) !important;
+}
+
+/* Panel de foto: recorta el zoom del hijo */
+.elementor-nav-menu--main .maya-mega__frame{
+	position:absolute;
+	top:var(--mega-pad);
+	right:var(--mega-pad);
+	bottom:var(--mega-pad);
+	width:var(--mega-shot-w);
+	overflow:hidden;
+	border-radius:4px;
+	opacity:0;
+	pointer-events:none;
+	transition:opacity .45s ease;
+}
+
+.elementor-nav-menu--main .maya-mega__shot{
+	position:absolute;
+	inset:0;
+	background-size:cover;
+	background-position:center;
+}
+
+.elementor-nav-menu--main .maya-mega > li:hover .maya-mega__frame,
+.elementor-nav-menu--main .maya-mega > li:focus-within .maya-mega__frame{
+	opacity:1;
+}
+
+.elementor-nav-menu--main .maya-mega > li:hover .maya-mega__shot,
+.elementor-nav-menu--main .maya-mega > li:focus-within .maya-mega__shot{
+	animation:maya-mega-zoom 7s ease-in-out infinite alternate;
+}
+
+/* Foto por defecto (primer masaje) mientras no hay ningún elemento activo.
+   En regla aparte: si el navegador no soporta :has(), solo se pierde esto. */
+.elementor-nav-menu--main .maya-mega:not(:has(> li:hover)):not(:has(> li:focus-within)) > li:first-child .maya-mega__frame{
+	opacity:1;
+}
+.elementor-nav-menu--main .maya-mega:not(:has(> li:hover)):not(:has(> li:focus-within)) > li:first-child .maya-mega__shot{
+	animation:maya-mega-zoom 7s ease-in-out infinite alternate;
+}
+
+@keyframes maya-mega-zoom{
+	from{transform:scale(1.001)}
+	to{transform:scale(1.14)}
+}
+
+@media (prefers-reduced-motion:reduce){
+	.elementor-nav-menu--main .maya-mega__shot{animation:none !important}
+}
+
+/* === Apertura: el sub-menú baja desde el borde inferior del nav y vuelve a subir ===
+   SmartMenus muestra/oculta con display inline; con display:block !important el panel
+   existe siempre y la transición corre en los dos sentidos (display no es animable).
+   Solo en punteros con hover: en táctil manda SmartMenus (tap = abrir/cerrar). */
+@media (hover:hover){
+	.elementor-nav-menu--main .elementor-nav-menu > li > .elementor-nav-menu--dropdown{
+		display:block !important;
+		z-index:9997;
+		opacity:0;
+		visibility:hidden;
+		transform:translate(var(--sub-x,0),-18px);
+		pointer-events:none;
+		transition:opacity .25s ease,transform .35s cubic-bezier(.22,.61,.36,1),visibility 0s .35s;
+	}
+
+	/* Puente invisible sobre el hueco (margin-top del dropdown): sin él, al bajar
+	   el puntero hacia el panel se pierde el :hover del li y se cierra.
+	   Si cambias ese margin en Elementor, ajusta --sub-gap. */
+	.elementor-nav-menu--main .elementor-nav-menu > li > .elementor-nav-menu--dropdown::before{
+		content:"";
+		position:absolute;
+		left:0;
+		right:0;
+		top:calc(-1 * var(--sub-gap,10px));
+		height:var(--sub-gap,10px);
+	}
+
+	.elementor-nav-menu--main .elementor-nav-menu > li:hover > .elementor-nav-menu--dropdown,
+	.elementor-nav-menu--main .elementor-nav-menu > li:focus-within > .elementor-nav-menu--dropdown{
+		opacity:1;
+		visibility:visible;
+		transform:translate(var(--sub-x,0),0);
+		pointer-events:auto;
+		transition:opacity .25s ease,transform .35s cubic-bezier(.22,.61,.36,1),visibility 0s;
+	}
+
+	@media (prefers-reduced-motion:reduce){
+		.elementor-nav-menu--main .elementor-nav-menu > li > .elementor-nav-menu--dropdown,
+		.elementor-nav-menu--main .elementor-nav-menu > li:hover > .elementor-nav-menu--dropdown,
+		.elementor-nav-menu--main .elementor-nav-menu > li:focus-within > .elementor-nav-menu--dropdown{
+			transform:translate(var(--sub-x,0),0);
+			transition:opacity .2s ease,visibility 0s
+		}
+	}
+}
+
+/* Si no caben las tres columnas a una línea junto a la foto, manda el texto:
+   se oculta la foto y los enlaces ocupan todo el panel. */
+@media (max-width:1230px){
+	.elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-nav-menu > li > ul.maya-mega{
+		padding-inline-end:var(--mega-pad) !important;
+	}
+
+	.elementor-nav-menu--main .maya-mega__frame{display:none}
+}
