@@ -35,7 +35,7 @@
 		gate.setAttribute('aria-labelledby', 'maya-agegate-title');
 		gate.innerHTML = [
 			'<div class="maya-agegate__panel">',
-			'<p class="maya-agegate__brand">Maya Erotik Massage Berlin</p>',
+			'<p class="maya-agegate__brand">- Maya Erotik Massage Berlin -</p>',
 			'<h1 class="maya-agegate__title" id="maya-agegate-title">Solo para mayores de 18 años</h1>',
 			'<div class="hero-rule" aria-hidden="true">&#9670;</div>',
 			'<p class="maya-agegate__text">Esta web contiene contenido erótico dirigido exclusivamente a personas adultas. Al entrar confirmas que tienes 18 años o más y que deseas verlo.</p>',
