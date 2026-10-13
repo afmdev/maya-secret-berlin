@@ -618,7 +618,8 @@ button:focus-visible,
 }
 
 /* El filete del héroe va calzado con el id de su widget: aquí su medida. */
-.maya-modal .hero-rule {
+.maya-modal .hero-rule,
+.svc-card .hero-rule {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -639,7 +640,11 @@ button:focus-visible,
 
 /* .elementor-kit-5 .elementor-button pesa (0,2,0): el botón se calza con
    .maya-modal para empatar y ganar por orden de hoja. */
-.maya-modal .maya-modal__btn {
+/* En la tarjeta de contacto el aire lo da el margen: .svc-card no es flex. */
+.svc-card .hero-rule { margin: 16px 0 18px; }
+
+.maya-modal .maya-modal__btn,
+.svc-card .maya-modal__btn {
 	display: inline-flex;
 	padding: 11px 15px;
 	/* Los dos pesan igual: ni WhatsApp ni teléfono es la vía principal. */
@@ -650,13 +655,16 @@ button:focus-visible,
 }
 
 .maya-modal .maya-modal__btn:hover,
-.maya-modal .maya-modal__btn:focus {
+.maya-modal .maya-modal__btn:focus,
+.svc-card .maya-modal__btn:hover,
+.svc-card .maya-modal__btn:focus {
 	border-color: var(--e-global-color-mayaerotikmassage_accent_1);
 	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
 	color: var(--e-global-color-mayaerotikmassage_accent_5);
 }
 
-.maya-modal .elementor-button .elementor-button-content-wrapper {
+.maya-modal .elementor-button .elementor-button-content-wrapper,
+.svc-card .elementor-button .elementor-button-content-wrapper {
 	justify-content: center;
 }
 

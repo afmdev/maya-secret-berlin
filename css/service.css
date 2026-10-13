@@ -14,7 +14,8 @@
 .svc-lead p{font-family:"Ovo",serif;font-size:22px;line-height:1.5;color:var(--svc-cream)}
 .svc-label{display:block;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
 	color:var(--svc-gold);margin:0 0 12px}
-.svc hr.svc-sep{border:0;border-top:1px solid var(--svc-line);margin:44px 0}
+.svc-main .hero-rule{display:flex;align-items:center;justify-content:center;gap:18px;
+	width:100%;margin:44px 0;font-size:11px;line-height:1;color:var(--svc-gold)}
 .svc .section-rule{margin:44px 0}
 
 .svc-list{list-style:none;margin:0;padding:0}
@@ -83,7 +84,7 @@
 	animation:svc-gal-auto 25s infinite}
 .svc-gal:hover .svc-gal-track{animation-play-state:paused}
 .svc-gal-slide{flex:none;width:20%;height:100%;overflow:hidden}
-.svc-gal-slide img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;border-radius:0}
+.svc-gal-slide img{width:100%;height:100%;object-fit:cover;object-position:center var(--foco,20%);display:block;border-radius:0}
 @keyframes svc-gal-auto{
 	0%,16%{transform:translateX(0)}
 	20%,36%{transform:translateX(-20%)}
@@ -131,8 +132,12 @@
 	overflow:hidden;border-radius:24px;
 	animation:svc-wipe 1.1s cubic-bezier(.65,0,.35,1) .15s both;
 }
+/* Las verticales se recortan por abajo: arriba está la cara. El encuadre de
+   cada foto se afina con --foco en su <img> (0% = borde superior, 50% = centro);
+   el origen del zoom va igualado para que el Ken Burns no mueva el encuadre. */
 .svc-side-photo img{
-	transform-origin:50% 20%;
+	object-position:center var(--foco,30%);
+	transform-origin:50% var(--foco,30%);
 	animation:svc-kenburns 20s ease-in-out 1.2s infinite alternate;
 }
 
@@ -143,7 +148,7 @@
 }
 
 .svc-gal-slide img{
-	transform-origin:50% 20%;
+	transform-origin:50% var(--foco,20%);
 	animation:svc-kenburns 20s ease-in-out infinite alternate;
 }
 
@@ -155,9 +160,11 @@
 
 /* ---------- Lupa + lightbox de las fotos ----------
    El botón lo inyecta js/svc-lightbox.js; el panel hereda de .maya-modal. */
-.svc-side-photo,.svc-gal-slide{position:relative}
-.svc-zoom{position:absolute;right:14px;bottom:14px;z-index:2;padding:0;
-	width:42px;height:42px;display:grid;place-items:center;cursor:pointer;
+.svc-side-photo,.svc-gal-slide{position:relative;cursor:zoom-in}
+.svc-side-photo .svc-zoom,.svc-gal-slide .svc-zoom{
+	position:absolute;right:14px;bottom:14px;z-index:2;
+	width:44px;height:44px;padding:0;margin:0;font-size:0;line-height:0;
+	display:grid;place-items:center;cursor:pointer;box-shadow:none;
 	border-radius:999px;color:var(--svc-cream);
 	background:color-mix(in srgb,#0D0A0C 45%,transparent);
 	border:1px solid color-mix(in srgb,var(--svc-cream) 25%,transparent);
@@ -165,16 +172,24 @@
 	transition:opacity .4s ease,transform .4s ease,color .3s ease,border-color .3s ease}
 .svc-zoom svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;
 	stroke-linecap:round}
-.svc-side-photo:hover .svc-zoom,.svc-side-photo:focus-within .svc-zoom,
-.svc-gal:hover .svc-zoom,.svc-gal:focus-within .svc-zoom{opacity:1;transform:scale(1)}
-.svc-zoom:hover{color:var(--svc-gold);border-color:var(--svc-gold)}
-@media(hover:none){.svc-zoom{opacity:1;transform:none}}
+.svc-side-photo:hover .svc-zoom,.svc-gal:hover .svc-zoom,
+.svc-side-photo:has(.svc-zoom:focus-visible) .svc-zoom,
+.svc-gal:has(.svc-zoom:focus-visible) .svc-zoom{opacity:1;transform:scale(1)}
+.svc-side-photo .svc-zoom:hover,.svc-gal-slide .svc-zoom:hover{
+	color:var(--svc-gold);border-color:var(--svc-gold);
+	background:color-mix(in srgb,#0D0A0C 60%,transparent)}
+@media(hover:none){.svc-side-photo .svc-zoom,.svc-gal-slide .svc-zoom{opacity:1;transform:none}}
 
-.svc-lightbox{width:min(1100px,calc(100vw - 32px));background:#0D0A0C}
-.svc-lightbox .svc-lightbox__inner{padding:0;gap:0}
-.svc-lightbox img{display:block;width:100%;height:auto;
-	max-height:calc(100vh - 64px);object-fit:contain;border-radius:20px}
-.svc-lightbox .maya-modal__close{top:12px;right:12px;z-index:2;
+/* Lightbox: el <dialog> ocupa la ventana entera y va transparente, así la foto
+   manda y no queda panel asomando a los lados. El velo lo pone el ::backdrop. */
+.svc-lightbox{width:100vw;max-width:100vw;height:100vh;max-height:100vh;
+	margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+.svc-lightbox .svc-lightbox__inner{padding:0;gap:0;height:100%;justify-content:center}
+/* el marco mide lo que la foto: así la X cae en su esquina, no en la de la ventana */
+.svc-lightbox__frame{position:relative;line-height:0}
+.svc-lightbox img{display:block;width:auto;height:auto;
+	max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);border-radius:20px}
+.svc-lightbox .maya-modal__close{top:16px;right:16px;z-index:2;
 	width:38px;height:38px;display:grid;place-items:center;border-radius:999px;
 	color:var(--svc-cream);background:color-mix(in srgb,#0D0A0C 55%,transparent);
 	border:1px solid color-mix(in srgb,var(--svc-cream) 25%,transparent);
