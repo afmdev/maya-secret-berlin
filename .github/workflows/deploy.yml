@@ -1,0 +1,11 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS -X POST "$HOOK" -o /dev/null
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
