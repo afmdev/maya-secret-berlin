@@ -784,3 +784,59 @@ button:focus-visible,
 	color: var(--e-global-color-mayaerotikmassage_accent_6);
 	border-bottom-color: currentColor;
 }
+
+/* El reveal de GSAP entra con scale(1.12): si el widget no recorta, la foto
+   sobresale del ancho de la ventana y asoma scroll horizontal mientras dura
+   la animación. El recorte deja el efecto igual y mata el desbordamiento. */
+.elementor-widget-image:not(.elementor-widget-theme-site-logo) {
+	overflow: hidden;
+	overflow: clip;
+}
+
+/* Cabecera móvil: la firma sustituye al logotipo y necesita la fila entera;
+   si no, el bloque se queda en su ancho mínimo y corta el nombre. */
+@media (max-width: 1024px) {
+	.elementor-148 .elementor-element-f27da1e,
+	.elementor-148 .elementor-widget-theme-site-logo {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	/* los dos botones ocupan lo suyo y no reparten el sobrante */
+	.elementor-148 .elementor-element-fdc35b3 {
+		flex: 0 0 auto;
+	}
+
+	/* el nombre completo en una línea: el cuerpo se ajusta al hueco que queda */
+	.elementor-148 .header-wordmark {
+		font-size: clamp(8px, 2.5vw, 12px);
+		letter-spacing: .06em;
+	}
+}
+
+/* Cabecera de escritorio: tres columnas con los lados iguales (1fr), así el
+   menú cae en el centro de la ventana. Si el nombre necesita más de lo que le
+   toca, el grid le da su ancho mínimo en vez de recortarlo. */
+@media (min-width: 1025px) {
+	.elementor-148 .elementor-element-5408edd > .e-con-inner {
+		display: grid;
+		grid-template-columns: 1fr max-content 1fr;
+		align-items: center;
+	}
+
+	/* los tres bloques venían con un ancho del 33%: dentro del grid eso fija
+	   columnas que no caben y empujan el botón fuera de la pantalla */
+	.elementor-148 .elementor-element-5408edd > .e-con-inner > .e-con {
+		width: auto;
+	}
+
+	/* el menú no debe comprimirse: pide su ancho natural */
+	.elementor-148 .elementor-element-2d11eb6,
+	.elementor-148 .elementor-element-2d11eb6 .elementor-nav-menu--main {
+		min-width: max-content;
+	}
+
+	.elementor-148 .elementor-element-e35f872 {
+		justify-self: end;
+	}
+}
