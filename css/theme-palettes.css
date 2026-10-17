@@ -1016,14 +1016,33 @@ button:focus-visible,
 	text-underline-offset: 3px;
 }
 
-/* Selector de idioma, a la izquierda del boton de contacto en las tres
-   cabeceras. Solo banderas: el nombre del idioma va en title y aria-label.
-   Es un <details> nativo, asi que abre y cierra con teclado y sin JS;
-   js/lang-switch.js solo cierra al pulsar fuera o con Escape. */
+/* Selector de idioma, a la izquierda del boton de contacto en las dos
+   cabeceras de escritorio. Solo banderas: el nombre del idioma va en title y
+   aria-label. Es un <details> nativo, asi que abre y cierra con teclado y sin
+   JS; js/lang-switch.js solo cierra al pulsar fuera o con Escape. */
 .maya-lang {
 	display: flex;
 	align-items: center;
 	margin-inline-end: 14px;
+}
+
+/* En movil no hay desplegable: las cuatro banderas van en fila al final del
+   menu de la hamburguesa (scripts/i18n_build.py las mete dentro del <nav>).
+   Un filete arriba las separa del ultimo item del menu. */
+.maya-lang--flat {
+	justify-content: center;
+	gap: 8px;
+	margin-inline-end: 0;
+	padding: 20px 0 10px;
+	border-top: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_1) 28%, transparent);
+}
+
+/* El relleno de .maya-lang__link (7px) es zona de toque en un panel estrecho;
+   suelto en una fila se queda corto para un dedo. El selector arranca en
+   .elementor-element para ganarle al padding de 14px/20px que el widget pone a
+   todo enlace del menu: ahi dentro separaba las banderas media pantalla. */
+.elementor-element .elementor-nav-menu--dropdown.elementor-nav-menu__container .maya-lang--flat a.maya-lang__link {
+	padding: 12px;
 }
 
 .maya-lang__box {
@@ -1151,15 +1170,22 @@ button:focus-visible,
 /* Los items entran escalonados: el panel ya desliza, pero sin esto el
    contenido aparece de golpe. Al cerrar no hay retardo, se van juntos
    mientras el panel sube. */
-.elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li {
+.elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li,
+.elementor-nav-menu--dropdown.elementor-nav-menu__container > .maya-lang--flat {
 	opacity: 0;
 	transform: translateY(-10px);
 	transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.elementor-nav-menu--dropdown.maya-menu-open > ul > li {
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li,
+.elementor-nav-menu--dropdown.maya-menu-open > .maya-lang--flat {
 	opacity: 1;
 	transform: none;
+}
+
+/* La fila de banderas cierra la lista: entra despues del ultimo item. */
+.elementor-nav-menu--dropdown.maya-menu-open > .maya-lang--flat {
+	transition-delay: 0.47s;
 }
 
 .elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(1) { transition-delay: 0.05s; }

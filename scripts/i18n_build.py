@@ -327,12 +327,18 @@ def head_meta(src, page, lang):
 
 
 def lang_switcher(src, page, lang):
-    """Un desplegable de banderas junto al boton de contacto, en cada cabecera.
+    """Banderas junto al boton de contacto en escritorio, dentro del menu en movil.
 
-    <details> nativo: abre con teclado y sin JS; js/lang-switch.js solo anade
-    cerrar al pulsar fuera o con Escape. El panel es un <div> y no un <ul>
-    porque SmartMenus toma cualquier <ul> de la cabecera por sub-menu suyo,
-    busca el enlace padre que no existe y deja el menu a medio montar.
+    En escritorio es un <details> nativo: abre con teclado y sin JS;
+    js/lang-switch.js solo anade cerrar al pulsar fuera o con Escape. El panel
+    es un <div> y no un <ul> porque SmartMenus toma cualquier <ul> de la
+    cabecera por sub-menu suyo, busca el enlace padre que no existe y deja el
+    menu a medio montar.
+
+    En la cabecera movil no cabe: entre el titulo, el boton de contacto y la
+    hamburguesa, el desplegable descuadraba la fila. Ahi las cuatro banderas
+    van en fila al final del menu que abre la hamburguesa, sin desplegable
+    anidado (viviria dentro de un panel que ya desliza y recorta).
     """
     options = ''.join(
         '<a class="maya-lang__link{}" href="{}" hreflang="{}" lang="{}" '
@@ -345,11 +351,23 @@ def lang_switcher(src, page, lang):
            f'{flag(lang)}<span class="maya-lang__caret" aria-hidden="true"></span></summary>'
            f'<div class="maya-lang__panel">{options}</div>'
            '</details></div>')
-    # El boton de contacto (widget bb9f07a) solo esta en las cabeceras, una por
-    # maquetacion (escritorio, pegajosa y movil): el selector entra a su lado en
-    # las tres y en ningun otro sitio de la pagina.
+    fila = (f'<div class="maya-lang maya-lang--flat" role="group" aria-label="{PICK[lang]}">'
+            f'{options}</div>')
+    # La cabecera movil (ae335e5, elementor-hidden-desktop) es la ultima del
+    # bloque de cabecera: lo que va antes son la pegajosa y su espaciador, que
+    # se esconden en tablet y movil. Se parte ahi para dar a cada una lo suyo.
+    corte = src.index('elementor-element-ae335e5')
+    arriba, movil = src[:corte], src[corte:]
+    # El boton de contacto (widget bb9f07a) solo esta en las cabeceras: el
+    # desplegable entra a su lado en las dos de escritorio y en ningun otro
+    # sitio de la pagina.
     btn = re.compile(r'<div class="[^"]*elementor-element-bb9f07a[^"]*"[^>]*>')
-    src = btn.sub(lambda m: box + m.group(0), src)
+    arriba = btn.sub(lambda m: box + m.group(0), arriba)
+    # count=1: el primer <nav> desplegable que queda por debajo del corte es el
+    # de la cabecera movil; los otros dos van arriba.
+    movil = re.sub(r'(<nav class="elementor-nav-menu--dropdown[^"]*"[^>]*>(?:(?!</nav>).)*?)</nav>',
+                   lambda m: m.group(1) + fila + '</nav>', movil, count=1, flags=re.S)
+    src = arriba + movil
     if 'lang-switch.js' not in src:
         src = src.replace('</body>', '\t<script src="/js/lang-switch.js" defer></script>\n'
                           '\t<script src="/js/mobile-menu.js" defer></script>\n</body>', 1)
