@@ -22,3 +22,6 @@ build/
 
 # Wrangler
 .wrangler
+
+# Herramienta local: no se publica en el repo
+.codegraph/
