@@ -321,6 +321,12 @@ def redirects():
     lines = ['# Generado por scripts/i18n_build.py: las URLs españolas vivian en la raiz.',
              '# index.html y faq.html se omiten: esas rutas las ocupa ahora el aleman,',
              '# que es el idioma principal. El hreflang lleva al visitante a /es/.']
+    # Un solo host canonico. www sirve la misma copia y todos los <link
+    # rel=canonical> apuntan al apex, asi que www redirige. Va la primera: las
+    # reglas de abajo son por ruta y, sin esta, matearian tambien en www y
+    # dejarian al visitante alli.
+    lines.append('# Un solo host canonico: www sirve la misma copia y los canonical apuntan al apex.')
+    lines.append(f'https://www.{SITE[len("https://"):]}/* {SITE}/:splat 301')
     taken = {out_path(p, 'de') for p in src_pages()}
     for page in src_pages():
         if page in taken:
