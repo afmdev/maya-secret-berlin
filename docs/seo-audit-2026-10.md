@@ -83,7 +83,7 @@ Hipótesis sobre el estado actual: el sitio probablemente está indexado pero co
 
 > Importante: todo se edita en `src/` y se regenera (`python3 scripts/i18n_extract.py && python3 scripts/i18n_build.py`). Las páginas de `/`, `/en`, `/es`, `/it` son generadas; editarlas directamente se pierde en el siguiente build.
 
-### 3.1 Home (DE) — actual: `Erotische Massage Berlin | Maya Secret – Élite Massage` (54)
+### 3.1 Home (DE) — actual: `Erotische Massage Berlin | Maya Secret` (54)
 
 | # | Title | Meta description |
 |---|---|---|
