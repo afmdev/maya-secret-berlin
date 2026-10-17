@@ -16,7 +16,7 @@ para que no dependan de la profundidad de la carpeta.
 import glob, html, json, os, posixpath, re, subprocess, sys, time
 from urllib.parse import quote
 
-SITE = 'https://mayaerotikmassage.com'
+SITE = 'https://www.mayaerotikmassage.com'
 SRC = 'src'
 PAGES = ['index.html', 'about.html', 'masajes.html', 'faq.html']
 RITUALS = ['clasico', 'tantrico', 'cuerpo-a-cuerpo', 'nuru', 'lingam', 'yoni',
