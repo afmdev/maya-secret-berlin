@@ -263,6 +263,19 @@ def rewrite_urls(src, page, lang):
         return m.group(1) + new + m.group(3) if new else m.group(0)
 
     src = re.sub(r'\b((?:href|src|data-src)=")([^"]+)(")', sub_attr, src)
+    # srcset e imagesrcset son listas "ruta descriptor, ruta descriptor": el
+    # regex de arriba solo ve atributos de un valor.
+    def sub_lista(m):
+        partes = []
+        for trozo in m.group(2).split(','):
+            trozo = trozo.strip()
+            if not trozo:
+                continue
+            ref, _, desc = trozo.partition(' ')
+            partes.append(((resolve(ref) or ref) + ' ' + desc).strip())
+        return m.group(1) + ', '.join(partes) + m.group(3)
+
+    src = re.sub(r'\b((?:imagesrcset|srcset)=")([^"]+)(")', sub_lista, src)
     src = re.sub(r'(url\()([^)\'"]+)(\))', sub_attr, src)
     # Rutas de assets dentro de la configuracion JS: el regex de atributos no las
     # ve, y al ser relativas se resuelven contra la carpeta de la pagina. En
@@ -290,6 +303,17 @@ def webp_srcset(stem):
 
 PRELOAD = re.compile(r'<link rel="preload" as="image" href="(/imgs/maya-[^"]+\.jpg)"\s*'
                      r'fetchpriority="high"\s*/>')
+
+
+AGEGATE = re.compile(r'<script src="/?js/age-gate\.js"></script>')
+
+
+def inline_agegate(src):
+    """La puerta de edad corre antes del primer pintado por obligacion legal,
+    asi que su <script> bloquea el render si o si. En linea son 3 KB que ya
+    vienen con el HTML en vez de una peticion mas en la ruta critica."""
+    js = open('js/age-gate.js', encoding='utf-8').read().strip()
+    return AGEGATE.sub(lambda m: '<script>\n' + js + '\n\t</script>', src, count=1)
 
 
 def preload_webp(src):
@@ -453,6 +477,7 @@ def build_page(page, lang, dic):
     src = rewrite_urls(src, page, lang)
     src = pictures(src)
     src = preload_webp(src)
+    src = inline_agegate(src)
     src = localize_imgs(src, lang)
     src = head_meta(src, page, lang)
     src = src.replace('</head>', SCOBY + '</head>', 1)
