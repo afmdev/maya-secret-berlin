@@ -235,6 +235,22 @@ button:focus-visible,
 	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 78%, transparent);
 }
 
+/* El enlace regular del kit es el mismo crema del párrafo: dentro de texto
+   corrido no se distingue más que por el color, y apenas (WCAG 1.4.1). Mismo
+   subrayado que el pie y las páginas legales. */
+.hero-lede a,
+.svc-main p a {
+	text-decoration: none;
+	border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.hero-lede a:hover,
+.hero-lede a:focus,
+.svc-main p a:hover,
+.svc-main p a:focus {
+	border-bottom-color: currentColor;
+}
+
 /* La columna de "Mi compromiso" traía 15vh de padding superior (135px en una
    pantalla de 900, más en una grande) que se sumaban a los 108px de separación
    entre secciones: el doble de aire que el resto de bloques. */
