@@ -1332,3 +1332,28 @@ button:focus-visible,
 picture {
 	display: contents;
 }
+
+/* === Lo que dejo de cubrir el stack de Elementor al quitarlo === */
+
+/* Sin SmartMenus el submenu del panel movil nace desplegado (lo cerraba el
+   display:none en linea): lo cierra el CSS y lo abre js/mobile-menu.js. */
+.elementor-nav-menu__container.elementor-nav-menu--dropdown .menu-item-has-children>ul.sub-menu {
+	display: none;
+}
+
+/* El mega menu abre por :hover (ver css/mega-menu.css). En pantalla tactil
+   ancha lo abria SmartMenus al tocar; ahora el enlace padre lleva derecho a
+   la pagina de masajes, que es la misma lista. */
+@media (hover: none) {
+	.elementor-nav-menu--main .elementor-nav-menu>li>.elementor-nav-menu--dropdown {
+		display: none;
+	}
+}
+
+/* La cabecera de movil la pegaba arriba Elementor Pro (sticky:top en su
+   data-settings); position:sticky hace lo mismo sin JS ni espaciador. */
+[data-settings*='"sticky":"top"'] {
+	position: sticky;
+	top: 0;
+	z-index: 9998;
+}

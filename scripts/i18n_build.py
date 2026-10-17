@@ -288,6 +288,26 @@ def webp_srcset(stem):
     return ', '.join(f'/imgs/{stem}-{w}.webp {w}w' for w in sorted(anchos))
 
 
+PRELOAD = re.compile(r'<link rel="preload" as="image" href="(/imgs/maya-[^"]+\.jpg)"\s*'
+                     r'fetchpriority="high"\s*/>')
+
+
+def preload_webp(src):
+    """El heroe lo pinta el <picture> en WebP: con el preload apuntando al JPEG
+    el navegador se bajaba una foto que no usa nadie y descubria la del LCP
+    tarde. Mismo srcset y mismo sizes que la <source>, asi el preload cuela."""
+    def rep(m):
+        stem = posixpath.basename(m.group(1))[:-len('.jpg')]
+        srcset = webp_srcset(stem)
+        if not srcset:
+            return m.group(0)
+        mayor = srcset.rsplit(', ', 1)[-1].split(' ')[0]
+        return (f'<link rel="preload" as="image" type="image/webp" href="{mayor}"\n'
+                f'\t\timagesrcset="{srcset}" imagesizes="{SIZES_EAGER}" fetchpriority="high" />')
+
+    return PRELOAD.sub(rep, src, count=1)
+
+
 def pictures(src):
     """Envuelve cada foto en <picture> con sus variantes WebP.
 
@@ -432,6 +452,7 @@ def build_page(page, lang, dic):
     src = translate(src, dic) if lang != 'es' else src
     src = rewrite_urls(src, page, lang)
     src = pictures(src)
+    src = preload_webp(src)
     src = localize_imgs(src, lang)
     src = head_meta(src, page, lang)
     src = src.replace('</head>', SCOBY + '</head>', 1)
