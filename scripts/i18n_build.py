@@ -74,6 +74,10 @@ NATIVE = {'de': 'Deutsch', 'en': 'English', 'es': 'Español', 'it': 'Italiano'}
 # idioma vive en el aria-label (lector de pantalla) y en el title (raton).
 PICK = {'de': 'Sprache wählen', 'en': 'Choose language',
         'es': 'Elegir idioma', 'it': 'Scegli lingua'}
+# Rotulo del boton +/- del menu movil: el icono no dice nada a un lector de
+# pantalla y el nombre del masaje ya lo lleva el enlace de al lado.
+SUBMENU = {'de': 'Untermenü anzeigen', 'en': 'Show submenu',
+           'es': 'Mostrar submenú', 'it': 'Mostra sottomenu'}
 
 # Banderas: cuatro SVG propios en imgs/flags/ (los emoji de bandera no se
 # dibujan en Windows). Van como <img> para que el navegador las cachee en vez
@@ -240,8 +244,53 @@ def lang_switcher(src, page, lang):
     btn = re.compile(r'<div class="[^"]*elementor-element-bb9f07a[^"]*"[^>]*>')
     src = btn.sub(lambda m: box + m.group(0), src)
     if 'lang-switch.js' not in src:
-        src = src.replace('</body>', '\t<script src="/js/lang-switch.js" defer></script>\n</body>', 1)
+        src = src.replace('</body>', '\t<script src="/js/lang-switch.js" defer></script>\n'
+                          '\t<script src="/js/mobile-menu.js" defer></script>\n</body>', 1)
     return src
+
+
+def mobile_submenu(src, page, lang):
+    """Boton +/- en los items con submenu del menu movil.
+
+    El menu movil lo monta SmartMenus, que se queda el primer toque del enlace
+    padre para desplegar: quien pulsa "Erotische Massagen" espera la pagina de
+    masajes, no un acordeon. El boton separa las dos cosas (abrir y navegar) y
+    usa el mismo par de iconos que el acordeon del FAQ; el resto lo hace
+    js/mobile-menu.js. Solo en los <nav> desplegables: en escritorio manda el
+    mega menu, que se abre al pasar el raton.
+    """
+    boton = ('<button class="maya-sub" type="button" aria-expanded="false" '
+             f'aria-label="{SUBMENU[lang]}">'
+             '<i aria-hidden="true" class="mayaerotikmassagetheme- mayaerotikmassage-theme-plus"></i>'
+             '<i aria-hidden="true" class="mayaerotikmassagetheme- mayaerotikmassage-theme-minus"></i>'
+             '</button>')
+    masajes = url_of('masajes.html', lang)[len(SITE):]
+    # El texto del enlace puede traer la flechita de SmartMenus, asi que el
+    # cierre se busca con un (?!</a>) en vez de con [^<]*.
+    padre = re.compile(r'(<a\s[^>]*class="[^"]*elementor-item[^"]*"[^>]*)'
+                       r'(>(?:(?!</a>).)*?</a>)(\s*<ul class="sub-menu)', re.S)
+
+    def en_nav(m):
+        visto = [0]
+
+        def marca(a):
+            visto[0] += 1
+            tag = a.group(1)
+            href = re.search(r'href="([^"]*)"', tag)
+            destino = href.group(1) if href else ''
+            # La plantilla del menu movil deja el padre en href="#"; el primero
+            # es el de masajes, asi que se le pone su pagina. Los demas padres
+            # sin destino se quedan solo como desplegable.
+            if destino in ('', '#') and visto[0] == 1:
+                destino = masajes
+            if destino in ('', '#'):
+                return tag + a.group(2) + boton + a.group(3)
+            return tag + f' data-maya-href="{destino}"' + a.group(2) + boton + a.group(3)
+
+        return padre.sub(marca, m.group(0))
+
+    return re.sub(r'<nav class="elementor-nav-menu--dropdown[^"]*"[^>]*>.*?</nav>',
+                  en_nav, src, flags=re.S)
 
 
 def build_page(page, lang, dic):
@@ -250,6 +299,7 @@ def build_page(page, lang, dic):
     src = rewrite_urls(src, page, lang)
     src = head_meta(src, page, lang)
     src = lang_switcher(src, page, lang)
+    src = mobile_submenu(src, page, lang)
     dest = out_path(page, lang)
     os.makedirs(os.path.dirname(dest) or '.', exist_ok=True)
     open(dest, 'w', encoding='utf-8').write(src)

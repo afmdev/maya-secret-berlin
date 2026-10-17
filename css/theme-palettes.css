@@ -1119,3 +1119,124 @@ button:focus-visible,
 .maya-lang .maya-lang__link.is-current img.maya-lang__flag {
 	box-shadow: 0 0 0 1px var(--e-global-color-mayaerotikmassage_accent_4);
 }
+
+/* ---- Menu movil -------------------------------------------------------- */
+
+/* Los items entran escalonados: el panel ya desliza, pero sin esto el
+   contenido aparece de golpe. Al cerrar no hay retardo, se van juntos
+   mientras el panel sube. */
+.elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li {
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li {
+	opacity: 1;
+	transform: none;
+}
+
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(1) { transition-delay: 0.05s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(2) { transition-delay: 0.11s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(3) { transition-delay: 0.17s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(4) { transition-delay: 0.23s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(5) { transition-delay: 0.29s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(6) { transition-delay: 0.35s; }
+.elementor-nav-menu--dropdown.maya-menu-open > ul > li:nth-child(n+7) { transition-delay: 0.41s; }
+
+/* La florecilla del logo delante de cada item, como en el mega menu. Va de
+   fondo del enlace y no en un ::before: ese pseudo ya lo usa Elementor para
+   el indicador del item activo, con opacidad 0 en los demas. El selector
+   arranca en .elementor-element para ganarle en peso al padding que el
+   widget fija por breakpoint. */
+.elementor-element .elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li > a.elementor-item {
+	padding-inline-start: 45px;
+	background-image: url(../imgs/flor.svg);
+	background-repeat: no-repeat;
+	background-position: 20px center;
+	background-size: 15px 15px;
+}
+
+/* El item con submenu reparte la fila: el enlace lleva a su pagina y el boton
+   abre la lista, que cae debajo ocupando el ancho completo. */
+.elementor-nav-menu--dropdown .menu-item-has-children {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+}
+
+.elementor-nav-menu--dropdown .menu-item-has-children > a.elementor-item {
+	flex: 1 1 auto;
+}
+
+.elementor-nav-menu--dropdown .menu-item-has-children > ul.sub-menu {
+	flex: 0 0 100%;
+}
+
+/* SmartMenus mete su propia flechita en el enlace; aqui manda el boton. */
+.elementor-nav-menu--dropdown .menu-item-has-children > a .sub-arrow {
+	display: none;
+}
+
+/* El kit pinta cualquier <button> como pastilla dorada; este es un icono. */
+.elementor-nav-menu--dropdown .maya-sub {
+	flex: 0 0 56px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+	font-size: 13px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.elementor-nav-menu--dropdown .maya-sub,
+.elementor-nav-menu--dropdown .maya-sub:hover,
+.elementor-nav-menu--dropdown .maya-sub:focus,
+.elementor-nav-menu--dropdown .maya-sub:active {
+	border-radius: 0;
+	background-color: transparent;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+.elementor-nav-menu--dropdown .maya-sub:focus-visible {
+	outline: 2px solid var(--e-global-color-mayaerotikmassage_accent_4);
+	outline-offset: -4px;
+}
+
+/* Cerrado se ve el +, abierto el -: el mismo par de iconos del acordeon. */
+.elementor-nav-menu--dropdown .maya-sub .mayaerotikmassage-theme-minus,
+.menu-item-has-children.is-open > .maya-sub .mayaerotikmassage-theme-plus {
+	display: none;
+}
+
+.menu-item-has-children.is-open > .maya-sub .mayaerotikmassage-theme-minus {
+	display: inline-block;
+}
+
+/* Los masajes van sangrados: sin la flor delante, la sangria es lo que
+   distingue el submenu de los items de primer nivel. */
+.elementor-element .elementor-nav-menu--dropdown.elementor-nav-menu__container .sub-menu a.elementor-sub-item {
+	padding-inline-start: 60px;
+}
+
+/* El submenu lo abre js/mobile-menu.js animando la altura. */
+.elementor-nav-menu--dropdown .menu-item-has-children > ul.sub-menu {
+	overflow: hidden;
+	transition: height 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li,
+	.elementor-nav-menu--dropdown .menu-item-has-children > ul.sub-menu {
+		transition: none;
+	}
+
+	.elementor-nav-menu--dropdown.elementor-nav-menu__container > ul > li {
+		opacity: 1;
+		transform: none;
+	}
+}
