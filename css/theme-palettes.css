@@ -646,7 +646,8 @@ button:focus-visible,
 .svc-card .hero-rule { margin: 16px 0 18px; }
 
 .maya-modal .maya-modal__btn,
-.svc-card .maya-modal__btn {
+.svc-card .maya-modal__btn,
+.faq-answer-actions .maya-modal__btn {
 	display: inline-flex;
 	padding: 11px 15px;
 	/* Los dos pesan igual: ni WhatsApp ni teléfono es la vía principal. */
@@ -659,7 +660,9 @@ button:focus-visible,
 .maya-modal .maya-modal__btn:hover,
 .maya-modal .maya-modal__btn:focus,
 .svc-card .maya-modal__btn:hover,
-.svc-card .maya-modal__btn:focus {
+.svc-card .maya-modal__btn:focus,
+.faq-answer-actions .maya-modal__btn:hover,
+.faq-answer-actions .maya-modal__btn:focus {
 	border-color: var(--e-global-color-mayaerotikmassage_accent_1);
 	background-color: var(--e-global-color-mayaerotikmassage_accent_1);
 	color: var(--e-global-color-mayaerotikmassage_accent_5);
@@ -887,4 +890,146 @@ button:focus-visible,
 .masajes-seo a:focus {
 	color: var(--e-global-color-mayaerotikmassage_accent_4);
 	border-bottom-color: currentColor;
+}
+
+/* ---- Cabecera de la pagina de FAQ ------------------------------------- */
+
+/* El export dejo la banda sin aire arriba: nacia pegada al header. */
+.faq-head {
+	--padding-top: clamp(56px, 9vh, 112px);
+	--align-items: flex-start;
+}
+
+/* La columna del titular acompana el scroll del acordeon: con catorce
+   preguntas, la llamada a Maya no debe salir de cuadro. */
+.elementor-19 .elementor-element.faq-intro {
+	position: sticky;
+	top: 110px;
+	align-self: flex-start;
+	--padding-right: 7%;
+}
+
+/* El widget venia capado a 380px y partia "Preguntas frecuentes" en dos. */
+.faq-intro .elementor-element.elementor-element-a069576 {
+	width: auto;
+	max-width: none;
+	--container-widget-width: auto;
+}
+
+/* En faq.html es el h1 y en las fichas de ritual un h2, pero manda como un
+   h2: mismos tokens que el titular de banda de masajes, para que la escala no
+   cambie entre paginas.
+   El min() con vw evita que "Preguntas frecuentes" parta en dos lineas. */
+.faq-intro h1.elementor-heading-title,
+.faq-intro h2.elementor-heading-title {
+	font-family: var(--e-global-typography-mayaerotikmassage_h2-font-family), Sans-serif;
+	font-size: min(var(--e-global-typography-mayaerotikmassage_h2-font-size), 4.4vw);
+	font-weight: var(--e-global-typography-mayaerotikmassage_h2-font-weight);
+	line-height: var(--e-global-typography-mayaerotikmassage_h2-line-height);
+	letter-spacing: var(--e-global-typography-mayaerotikmassage_h2-letter-spacing);
+	text-transform: var(--e-global-typography-mayaerotikmassage_h2-text-transform);
+	color: var(--e-global-color-mayaerotikmassage_accent_6);
+	text-wrap: balance;
+}
+
+/* El hueco bajo el titular era de 40px (Elementor): la mitad basta, el
+   filete ya aporta su propio aire. Solo escritorio; tablet y movil ya
+   traen 5px y 0px. */
+@media (min-width: 1025px) {
+	.elementor-19 .elementor-element.elementor-element-a069576 {
+		margin-bottom: calc(var(--kit-widget-spacing, 0px) + 20px);
+	}
+}
+
+/* El filete del heroe, aqui alineado a la izquierda. */
+.faq-intro .hero-rule {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	width: min(300px, 100%);
+	margin: 10px 0 16px;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+/* La entradilla es la misma del heroe (.hero-lede): aqui solo deja de ir
+   centrada, porque vive en una columna. */
+.faq-intro .hero-lede {
+	max-width: 46ch;
+	margin: 0 0 26px;
+}
+
+@media (max-width: 1024px) {
+	.elementor-19 .elementor-element.faq-intro {
+		position: static;
+		--padding-right: 0%;
+	}
+
+	.faq-intro .hero-lede {
+		max-width: none;
+	}
+}
+
+/* ---- Respuestas del acordeon ------------------------------------------ */
+
+/* Enlaces dentro de una respuesta: el subrayado marca el enlace sin que el
+   oro del kit pique el texto corrido (mismo trato que la cola SEO). */
+.e-n-accordion-item a:not(.elementor-button) {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_4) 45%, transparent);
+}
+
+.e-n-accordion-item a:not(.elementor-button):hover,
+.e-n-accordion-item a:not(.elementor-button):focus {
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+	border-bottom-color: currentColor;
+}
+
+/* Contacto directo dentro de la respuesta de la reserva. */
+.faq-answer-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 20px;
+}
+
+/* El asterisco usa la nota del modal: condicion, no reclamo. */
+.faq-answer-actions + .maya-modal__note {
+	margin-top: 16px;
+}
+
+/* El limite duro del FAQ: va en dorado y subrayado para que se lea antes
+   que el resto de la respuesta. */
+.faq-hard-no {
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Selector de idioma en el menu: el idioma activo en dorado, los otros en
+   gris para que no compitan con los enlaces de navegacion. */
+.menu-item.maya-lang {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.maya-lang__link {
+	font-size: 0.72rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	opacity: 0.55;
+	padding: 0 !important;
+}
+
+.maya-lang__link:hover,
+.maya-lang__link:focus {
+	opacity: 1;
+}
+
+.maya-lang__link.is-current {
+	opacity: 1;
+	color: var(--e-global-color-mayaerotikmassage_accent_4);
 }

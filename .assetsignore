@@ -9,3 +9,6 @@ node_modules
 .github
 docs
 README.md
+src
+i18n
+scripts

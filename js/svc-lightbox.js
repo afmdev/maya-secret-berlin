@@ -6,13 +6,22 @@
 	const photos = document.querySelectorAll('.svc-side-photo, .svc-gal-slide');
 	if (!photos.length) return;
 
+	// Etiquetas solo para lector de pantalla, en el idioma de la pagina.
+	const ETIQUETAS = {
+		de: { cerrar: 'Schließen', previa: 'Vorheriges Foto', siguiente: 'Nächstes Foto', lupa: 'Foto groß ansehen' },
+		en: { cerrar: 'Close', previa: 'Previous photo', siguiente: 'Next photo', lupa: 'View photo larger' },
+		es: { cerrar: 'Cerrar', previa: 'Foto anterior', siguiente: 'Foto siguiente', lupa: 'Ver la foto en grande' },
+		it: { cerrar: 'Chiudi', previa: 'Foto precedente', siguiente: 'Foto successiva', lupa: 'Vedi la foto ingrandita' }
+	};
+	const t = ETIQUETAS[(document.documentElement.lang || 'de').slice(0, 2)] || ETIQUETAS.de;
+
 	const dialog = document.createElement('dialog');
 	dialog.className = 'maya-modal svc-lightbox';
 	dialog.innerHTML = '<div class="maya-modal__inner svc-lightbox__inner">'
 		+ '<div class="svc-lightbox__frame">'
-		+ '<button type="button" class="maya-modal__close" aria-label="Cerrar">&#215;</button>'
-		+ '<button type="button" class="svc-lightbox__nav" data-paso="-1" aria-label="Foto anterior">&#8249;</button>'
-		+ '<button type="button" class="svc-lightbox__nav" data-paso="1" aria-label="Foto siguiente">&#8250;</button>'
+		+ `<button type="button" class="maya-modal__close" aria-label="${t.cerrar}">&#215;</button>`
+		+ `<button type="button" class="svc-lightbox__nav" data-paso="-1" aria-label="${t.previa}">&#8249;</button>`
+		+ `<button type="button" class="svc-lightbox__nav" data-paso="1" aria-label="${t.siguiente}">&#8250;</button>`
 		+ '<img alt=""></div></div>';
 	const full = dialog.querySelector('img');
 	document.body.append(dialog);
@@ -48,7 +57,7 @@
 		const btn = document.createElement('button');
 		btn.type = 'button';
 		btn.className = 'svc-zoom';
-		btn.setAttribute('aria-label', 'Ver la foto en grande');
+		btn.setAttribute('aria-label', t.lupa);
 		btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
 			+ '<circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 21 21"/>'
 			+ '<path d="M8.5 11h5M11 8.5v5"/></svg>';

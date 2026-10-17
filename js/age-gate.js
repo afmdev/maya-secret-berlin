@@ -26,7 +26,41 @@
 		'html.maya-agegate-on body>*:not(.maya-agegate){visibility:hidden}';
 	document.head.appendChild(velo);
 
+	// La puerta es lo primero que se ve, asi que habla el idioma de la pagina:
+	// el <html lang> ya lo pone scripts/i18n_build.py. Aleman por defecto.
+	var TEXTOS = {
+		de: {
+			titulo: 'Nur für Personen ab 18 Jahren',
+			texto: 'Diese Website enthält erotische Inhalte ausschließlich für Erwachsene. Mit dem Eintreten bestätigen Sie, dass Sie 18 Jahre oder älter sind und die Inhalte sehen möchten.',
+			entrar: 'Ich bin 18 oder älter',
+			salir: 'Verlassen',
+			nota: 'Maya gibt Massagen in Berlin nur nach Vereinbarung. Hier werden keine sexuellen Dienstleistungen angeboten.'
+		},
+		en: {
+			titulo: 'For adults 18 and over only',
+			texto: 'This website contains erotic content intended for adults only. By entering you confirm that you are 18 or older and that you wish to see it.',
+			entrar: 'I am 18 or older',
+			salir: 'Leave',
+			nota: 'Maya gives massages in Berlin by appointment only. No sexual services are offered here.'
+		},
+		es: {
+			titulo: 'Solo para mayores de 18 años',
+			texto: 'Esta web contiene contenido erótico dirigido exclusivamente a personas adultas. Al entrar confirma que tiene 18 años o más y que desea verlo.',
+			entrar: 'Tengo 18 años o más',
+			salir: 'Salir',
+			nota: 'Maya solo ofrece masajes con cita previa en Berlín. Aquí no se ofrecen servicios sexuales.'
+		},
+		it: {
+			titulo: 'Solo per maggiori di 18 anni',
+			texto: 'Questo sito contiene contenuti erotici destinati esclusivamente a persone adulte. Entrando conferma di avere 18 anni o più e di volerli vedere.',
+			entrar: 'Ho 18 anni o più',
+			salir: 'Esci',
+			nota: 'Maya offre massaggi a Berlino solo su appuntamento. Qui non si offrono servizi sessuali.'
+		}
+	};
+
 	function montar() {
+		var t = TEXTOS[(html.getAttribute('lang') || 'de').slice(0, 2)] || TEXTOS.de;
 		var gate = document.createElement('div');
 		gate.className = 'maya-agegate';
 		gate.setAttribute('role', 'dialog');
@@ -36,14 +70,14 @@
 		gate.innerHTML = [
 			'<div class="maya-agegate__panel">',
 			'<p class="maya-agegate__brand">- Maya Erotik Massage Berlin -</p>',
-			'<h1 class="maya-agegate__title" id="maya-agegate-title">Solo para mayores de 18 años</h1>',
+			'<h1 class="maya-agegate__title" id="maya-agegate-title">' + t.titulo + '</h1>',
 			'<div class="hero-rule" aria-hidden="true">&#9670;</div>',
-			'<p class="maya-agegate__text">Esta web contiene contenido erótico dirigido exclusivamente a personas adultas. Al entrar confirmas que tienes 18 años o más y que deseas verlo.</p>',
+			'<p class="maya-agegate__text">' + t.texto + '</p>',
 			'<div class="maya-agegate__actions">',
-			'<button type="button" class="maya-agegate__btn" data-agegate="in">Tengo 18 años o más</button>',
-			'<button type="button" class="maya-agegate__btn maya-agegate__btn--out" data-agegate="out">Salir</button>',
+			'<button type="button" class="maya-agegate__btn" data-agegate="in">' + t.entrar + '</button>',
+			'<button type="button" class="maya-agegate__btn maya-agegate__btn--out" data-agegate="out">' + t.salir + '</button>',
 			'</div>',
-			'<p class="maya-agegate__note">Maya solo ofrece masajes con cita previa en Berlin. Aquí no se ofrecen servicios sexuales.</p>',
+			'<p class="maya-agegate__note">' + t.nota + '</p>',
 			'</div>'
 		].join('');
 		document.body.appendChild(gate);

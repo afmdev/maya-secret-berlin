@@ -1,0 +1,23 @@
+# Generado por scripts/i18n_build.py: las URLs españolas vivian en la raiz.
+# index.html y faq.html se omiten: esas rutas las ocupa ahora el aleman,
+# que es el idioma principal. El hreflang lleva al visitante a /es/.
+/about.html /es/sobre-maya.html 301
+/masajes.html /es/masajes.html 301
+/servicios/masaje-erotico-clasico/index.html /es/servicios/masaje-erotico-clasico/ 301
+/servicios/masaje-erotico-clasico/ /es/servicios/masaje-erotico-clasico/ 301
+/servicios/masaje-erotico-tantrico/index.html /es/servicios/masaje-erotico-tantrico/ 301
+/servicios/masaje-erotico-tantrico/ /es/servicios/masaje-erotico-tantrico/ 301
+/servicios/masaje-erotico-cuerpo-a-cuerpo/index.html /es/servicios/masaje-erotico-cuerpo-a-cuerpo/ 301
+/servicios/masaje-erotico-cuerpo-a-cuerpo/ /es/servicios/masaje-erotico-cuerpo-a-cuerpo/ 301
+/servicios/masaje-erotico-nuru/index.html /es/servicios/masaje-erotico-nuru/ 301
+/servicios/masaje-erotico-nuru/ /es/servicios/masaje-erotico-nuru/ 301
+/servicios/masaje-erotico-lingam/index.html /es/servicios/masaje-erotico-lingam/ 301
+/servicios/masaje-erotico-lingam/ /es/servicios/masaje-erotico-lingam/ 301
+/servicios/masaje-erotico-yoni/index.html /es/servicios/masaje-erotico-yoni/ 301
+/servicios/masaje-erotico-yoni/ /es/servicios/masaje-erotico-yoni/ 301
+/servicios/masaje-erotico-sensual/index.html /es/servicios/masaje-erotico-sensual/ 301
+/servicios/masaje-erotico-sensual/ /es/servicios/masaje-erotico-sensual/ 301
+/servicios/masaje-erotico-oriental/index.html /es/servicios/masaje-erotico-oriental/ 301
+/servicios/masaje-erotico-oriental/ /es/servicios/masaje-erotico-oriental/ 301
+/servicios/masaje-erotico-mutuo/index.html /es/servicios/masaje-erotico-mutuo/ 301
+/servicios/masaje-erotico-mutuo/ /es/servicios/masaje-erotico-mutuo/ 301
