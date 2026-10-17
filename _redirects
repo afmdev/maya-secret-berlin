@@ -1,8 +1,6 @@
 # Generado por scripts/i18n_build.py: las URLs españolas vivian en la raiz.
 # index.html y faq.html se omiten: esas rutas las ocupa ahora el aleman,
 # que es el idioma principal. El hreflang lleva al visitante a /es/.
-# Un solo host canonico: www sirve la misma copia y los canonical apuntan al apex.
-https://www.mayaerotikmassage.com/* https://mayaerotikmassage.com/:splat 301
 /about.html /es/sobre-maya 301
 /masajes.html /es/masajes 301
 /servicios/masaje-erotico-clasico/index.html /es/servicios/masaje-erotico-clasico/ 301

@@ -439,12 +439,13 @@ def redirects():
     lines = ['# Generado por scripts/i18n_build.py: las URLs españolas vivian en la raiz.',
              '# index.html y faq.html se omiten: esas rutas las ocupa ahora el aleman,',
              '# que es el idioma principal. El hreflang lleva al visitante a /es/.']
-    # Un solo host canonico. www sirve la misma copia y todos los <link
-    # rel=canonical> apuntan al apex, asi que www redirige. Va la primera: las
-    # reglas de abajo son por ruta y, sin esta, matearian tambien en www y
-    # dejarian al visitante alli.
-    lines.append('# Un solo host canonico: www sirve la misma copia y los canonical apuntan al apex.')
-    lines.append(f'https://www.{SITE[len("https://"):]}/* {SITE}/:splat 301')
+    # Aqui NO va el salto de www al apex. Workers Static Assets solo acepta
+    # rutas relativas en _redirects ("Domain-level redirects: no"), y una regla
+    # con el host entero tumba el despliegue entero con
+    # "Invalid _redirects configuration: Only relative URLs are allowed".
+    # Si se quiere ese salto, va como Redirect Rule de la zona, no en este
+    # fichero. Mientras tanto www sirve la misma copia y los <link
+    # rel=canonical> apuntan al apex, que es lo que lee Google.
     taken = {out_path(p, 'de') for p in src_pages()}
     for page in src_pages():
         if page in taken:
@@ -458,6 +459,12 @@ def redirects():
     # el deploy las ignora en silencio y las fotos traducidas dan 404.
     reglas = [l for l in lines if not l.startswith('#')]
     assert len(reglas) <= 2000, f'{len(reglas)} reglas en _redirects, el limite es 2000'
+    # Una sola regla con el host entero tumba el despliegue completo, y el
+    # error solo sale en `wrangler deploy`: entre medias cada push parece
+    # verde en Actions y la web se queda congelada en la version anterior.
+    for l in reglas:
+        assert not re.search(r'https?://', l), \
+            f'_redirects solo admite rutas relativas, y esta no lo es: {l}'
     open('_redirects', 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
 
 
