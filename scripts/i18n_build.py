@@ -70,6 +70,10 @@ ORDER = ['de', 'en', 'es', 'it']
 # Nombre del idioma en su propio idioma: lo que espera ver quien no entiende
 # el idioma de la pagina en la que esta.
 NATIVE = {'de': 'Deutsch', 'en': 'English', 'es': 'Español', 'it': 'Italiano'}
+# Rotulo del boton: en el menu solo se ve la bandera, asi que el nombre del
+# idioma vive en el aria-label (lector de pantalla) y en el title (raton).
+PICK = {'de': 'Sprache wählen', 'en': 'Choose language',
+        'es': 'Elegir idioma', 'it': 'Scegli lingua'}
 
 # Banderas: cuatro SVG propios en imgs/flags/ (los emoji de bandera no se
 # dibujan en Windows). Van como <img> para que el navegador las cachee en vez
@@ -206,31 +210,29 @@ def head_meta(src, page, lang):
 
 
 def lang_switcher(src, page, lang):
-    """Un desplegable por menu, detras del enlace de FAQ (ultimo item).
+    """Un desplegable de banderas junto al boton de contacto, en cada cabecera.
 
-    <details> nativo: abre con teclado y sin JS; js/lang-switch.js solo añade
-    cerrar al pulsar fuera o con Escape. El panel es un <div> y no un <ul>:
-    SmartMenus toma cualquier <ul> del menu por sub-menu suyo, busca el enlace
-    padre que no existe y deja la cabecera a medio montar.
+    <details> nativo: abre con teclado y sin JS; js/lang-switch.js solo anade
+    cerrar al pulsar fuera o con Escape. El panel es un <div> y no un <ul>
+    porque SmartMenus toma cualquier <ul> de la cabecera por sub-menu suyo,
+    busca el enlace padre que no existe y deja el menu a medio montar.
     """
     options = ''.join(
-        '<a class="maya-lang__link{}" href="{}" hreflang="{}" '
-        'lang="{}"{}>{}<span>{}</span></a>'.format(
-            ' is-current' if l == lang else '', url_of(page, l)[len(SITE):],
-            l, l, ' aria-current="page"' if l == lang else '', flag(l), NATIVE[l])
+        '<a class="maya-lang__link{}" href="{}" hreflang="{}" lang="{}" '
+        'title="{}" aria-label="{}"{}>{}</a>'.format(
+            ' is-current' if l == lang else '', url_of(page, l)[len(SITE):], l, l,
+            NATIVE[l], NATIVE[l], ' aria-current="page"' if l == lang else '', flag(l))
         for l in ORDER)
-    li = ('<li class="menu-item maya-lang">'
-          '<details class="maya-lang__box">'
-          f'<summary class="elementor-item maya-lang__toggle">{flag(lang)}'
-          f'<span class="maya-lang__code">{lang.upper()}</span>'
-          '<span class="maya-lang__caret" aria-hidden="true"></span></summary>'
-          f'<div class="maya-lang__panel">{options}</div>'
-          '</details></li>')
-    # El texto de FAQ ya esta traducido, asi que el ancla se busca por su href;
-    # el orden de los atributos cambia entre plantillas, de ahi el [^>]*.
-    faq_url = out_path('faq.html', lang)
-    faq_item = re.compile(r'(<li[^>]*>\s*<a\s[^>]*href="/?' + re.escape(faq_url) + r'"[^>]*>[^<]*</a>\s*</li>)')
-    src = faq_item.sub(lambda m: m.group(1) + li, src)
+    box = ('<div class="maya-lang"><details class="maya-lang__box">'
+           f'<summary class="maya-lang__toggle" aria-label="{PICK[lang]}" title="{PICK[lang]}">'
+           f'{flag(lang)}<span class="maya-lang__caret" aria-hidden="true"></span></summary>'
+           f'<div class="maya-lang__panel">{options}</div>'
+           '</details></div>')
+    # El boton de contacto (widget bb9f07a) solo esta en las cabeceras, una por
+    # maquetacion (escritorio, pegajosa y movil): el selector entra a su lado en
+    # las tres y en ningun otro sitio de la pagina.
+    btn = re.compile(r'<div class="[^"]*elementor-element-bb9f07a[^"]*"[^>]*>')
+    src = btn.sub(lambda m: box + m.group(0), src)
     if 'lang-switch.js' not in src:
         src = src.replace('</body>', '\t<script src="/js/lang-switch.js" defer></script>\n</body>', 1)
     return src

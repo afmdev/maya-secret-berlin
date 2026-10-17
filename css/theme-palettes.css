@@ -1008,12 +1008,14 @@ button:focus-visible,
 	text-underline-offset: 3px;
 }
 
-/* Selector de idioma en el menu: un <details> nativo, asi abre y cierra con
-   teclado y sin JS (js/lang-switch.js solo cierra al pulsar fuera o con Esc).
-   Cerrado ocupa bandera + codigo para no competir con los enlaces del menu. */
-.menu-item.maya-lang {
+/* Selector de idioma, a la izquierda del boton de contacto en las tres
+   cabeceras. Solo banderas: el nombre del idioma va en title y aria-label.
+   Es un <details> nativo, asi que abre y cierra con teclado y sin JS;
+   js/lang-switch.js solo cierra al pulsar fuera o con Escape. */
+.maya-lang {
 	display: flex;
 	align-items: center;
+	margin-inline-end: 14px;
 }
 
 .maya-lang__box {
@@ -1023,30 +1025,19 @@ button:focus-visible,
 .maya-lang__toggle {
 	display: flex;
 	align-items: center;
-	gap: 7px;
+	gap: 5px;
 	cursor: pointer;
 	/* El triangulo lo pinta .maya-lang__caret; el marcador nativo sobra. */
 	list-style: none;
-	font-size: 0.72rem;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	opacity: 0.7;
+	color: var(--e-global-color-mayaerotikmassage_primary_font_color);
+	opacity: 0.8;
 }
 
 .maya-lang__toggle::-webkit-details-marker {
 	display: none;
 }
 
-/* El menu da fondo gris al .elementor-item en :hover y :focus; el boton de
-   idioma se marca subiendo la opacidad, sin fondo. */
 .maya-lang__toggle:hover,
-.maya-lang__toggle:focus,
-.elementor-nav-menu--dropdown .maya-lang__toggle:focus {
-	background-color: transparent;
-}
-
-.maya-lang__toggle:hover,
-.maya-lang__toggle:focus-visible,
 .maya-lang__box[open] .maya-lang__toggle {
 	opacity: 1;
 }
@@ -1078,54 +1069,32 @@ button:focus-visible,
 	top: calc(100% + 12px);
 	inset-inline-end: 0;
 	z-index: 120;
-	min-width: 168px;
-	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 10px;
 	background: var(--e-global-color-mayaerotikmassage_accent_5);
 	border: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_1) 40%, transparent);
 	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 .maya-lang__link {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 8px 10px !important;
-	font-size: 0.8rem;
-	white-space: nowrap;
-	color: var(--e-global-color-mayaerotikmassage_primary_font_color);
-	opacity: 0.7;
+	display: block;
+	line-height: 0;
+	opacity: 0.6;
+	transition: opacity 0.2s ease;
 }
 
 .maya-lang__link:hover,
 .maya-lang__link:focus {
 	opacity: 1;
-	background: var(--e-global-color-mayaerotikmassage_accent_7);
 }
 
+/* El idioma actual se marca con el filete dorado del kit, no con texto. */
 .maya-lang__link.is-current {
 	opacity: 1;
-	color: var(--e-global-color-mayaerotikmassage_accent_4);
 }
 
-/* En el menu movil el panel flotante se saldria del contenedor: ahi la lista
-   cae en el flujo, debajo del boton, con la sangria de los demas enlaces. */
-.elementor-nav-menu--dropdown .maya-lang__toggle {
-	padding: 14px 20px;
-}
-
-.elementor-nav-menu--dropdown .maya-lang__link {
-	padding: 10px 20px !important;
-}
-
-.elementor-nav-menu--dropdown .maya-lang {
-	flex-direction: column;
-	align-items: stretch;
-}
-
-.elementor-nav-menu--dropdown .maya-lang__panel {
-	position: static;
-	min-width: 0;
-	border: 0;
-	box-shadow: none;
-	background: transparent;
+.maya-lang .maya-lang__link.is-current img.maya-lang__flag {
+	box-shadow: 0 0 0 2px var(--e-global-color-mayaerotikmassage_accent_4);
 }
