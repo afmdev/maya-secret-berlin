@@ -1335,6 +1335,19 @@ picture {
 
 /* === Lo que dejo de cubrir el stack de Elementor al quitarlo === */
 
+/* Las fotos de la rejilla de rituales son <img loading="lazy" sizes="auto">
+   dentro de un widget que es item flex: sin ancho propio el navegador resolvia
+   sizes=auto a 0px, no pintaba la foto y, sin foto, el widget seguia midiendo
+   0. Con Elementor el circulo lo rompia su JS; ahora lo rompe el ancho fijo. */
+.e-loop-item .elementor-widget-theme-post-featured-image {
+	width: 100%;
+}
+
+.e-loop-item .elementor-widget-theme-post-featured-image img {
+	width: 100%;
+	height: auto;
+}
+
 /* Sin SmartMenus el submenu del panel movil nace desplegado (lo cerraba el
    display:none en linea): lo cierra el CSS y lo abre js/mobile-menu.js. */
 .elementor-nav-menu__container.elementor-nav-menu--dropdown .menu-item-has-children>ul.sub-menu {

@@ -17,11 +17,14 @@
 		const mostrar = el => {
 			let cfg = {};
 			try { cfg = JSON.parse(el.dataset.settings || '{}'); } catch (e) { /* sin ajustes */ }
+			// Los widgets guardan la animacion en _animation y los contenedores
+			// en animation (72 bloques, casi todos slideInUp): leer solo la
+			// primera los dejaba a todos con el fadeIn de reserva.
 			const entrada = () => {
-				el.classList.add('animated', cfg._animation || 'fadeIn');
+				el.classList.add('animated', cfg._animation || cfg.animation || 'fadeIn');
 				el.classList.remove('elementor-invisible');
 			};
-			const espera = cfg._animation_delay || 0;
+			const espera = cfg._animation_delay || cfg.animation_delay || 0;
 			espera ? setTimeout(entrada, espera) : entrada();
 		};
 		const ojo = new IntersectionObserver((entradas, obs) => {
