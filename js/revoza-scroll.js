@@ -10,9 +10,15 @@
 	gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
 	gsap.ticker.lagSmoothing(0);
 
-	/* Texto: los caracteres pasan de opacidad .3 a 1 segun avanza el scroll */
+	/* Texto: los caracteres pasan de opacidad .3 a 1 segun avanza el scroll.
+
+	   Se cogen todos los h1 y h2 del contenido, no solo los de Elementor: las
+	   paginas escritas a mano (sobre Maya y los nueve rituales, en los cuatro
+	   idiomas) llevan <h1>/<h2> pelados y se quedaban sin efecto. En
+	   ueber-maya.html no entraba ninguno de los ocho. La cabecera, el pie y
+	   los menus quedan fuera por la guarda de abajo. */
 	function textReveal() {
-		document.querySelectorAll('h1.elementor-heading-title, h2.elementor-heading-title').forEach(function (el) {
+		document.querySelectorAll('h1, h2').forEach(function (el) {
 			if (el.closest('header, footer, nav')) return;
 
 			SplitText.create(el, {
