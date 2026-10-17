@@ -186,6 +186,12 @@ def rewrite_urls(src, page, lang):
 
     src = re.sub(r'\b((?:href|src|data-src)=")([^"]+)(")', sub_attr, src)
     src = re.sub(r'(url\()([^)\'"]+)(\))', sub_attr, src)
+    # Rutas de assets dentro de la configuracion JS: el regex de atributos no las
+    # ve, y al ser relativas se resuelven contra la carpeta de la pagina. En
+    # /en/ o /massagen/x/ eso es un 404 por cada chunk de Elementor (cientos de
+    # errores en consola y el menu o el acordeon sin montar).
+    src = re.sub(r'"jspath": "[^"]*"', '"jspath": "/js/"', src)
+    src = re.sub(r'"assets": "[^"]*"', '"assets": "/"', src)
     src = re.sub(r'(https://wa\.me/\d+\?text=)[^"&]*',
                  lambda m: m.group(1) + quote(WA_TEXT[lang]), src)
     for label, href in LEGAL.items():
