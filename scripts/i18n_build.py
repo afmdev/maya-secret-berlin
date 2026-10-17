@@ -145,6 +145,15 @@ def flag(l):
 # Paginas legales: una sola version, en aleman, compartida por los cuatro idiomas.
 LEGAL = {'Impressum': '/impressum', 'Datenschutz': '/datenschutz'}
 
+# Contador de visitas (Scoby, Berlin): sin cookies, sin IP y sin datos
+# personales, asi que no lleva banner de consentimiento; va declarado en
+# /datenschutz por interes legitimo. El ID del espacio de trabajo viaja en el
+# subdominio y es publico: la clave de acceso (la del panel) no entra aqui.
+# El propio script manda la visita al cargar (autoLogging), no hace falta
+# llamar a nada. Las dos paginas legales se mantienen a mano y llevan esta
+# misma linea escrita dentro.
+SCOBY = '\t<script src="https://1x06e.s3y.io" defer></script>\n'
+
 # Mensaje con el que se abre WhatsApp: deja claro el limite antes del primer
 # mensaje, asi que va en el idioma de la pagina.
 WA_TEXT = {
@@ -425,6 +434,7 @@ def build_page(page, lang, dic):
     src = pictures(src)
     src = localize_imgs(src, lang)
     src = head_meta(src, page, lang)
+    src = src.replace('</head>', SCOBY + '</head>', 1)
     src = lang_switcher(src, page, lang)
     src = mobile_submenu(src, page, lang)
     PAGE_IMGS[page, lang] = page_imgs(src)

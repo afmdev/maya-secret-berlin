@@ -10,7 +10,7 @@ Live: **[www.mayaerotikmassage.com](https://www.mayaerotikmassage.com)**
 
 A static, multi-page site in four languages — German (primary, at the root), English, Spanish and Italian. Plain HTML, a handful of stylesheets and vanilla JS: **no bundler, no framework, no dependencies to install**. The only build step is a Python script that stamps the four language trees out of `src/` plus the string tables in `i18n/`. The markup started life as an Elementor theme and was flattened into static files; the CSS and JS written for this project sit on top of it.
 
-- **Zero third-party requests.** No analytics, no CDN, no embeds, no cookies. Fonts, images, jQuery, GSAP, Lenis and Swiper are all self-hosted.
+- **One third-party request.** No CDN, no embeds, no cookies: fonts, images, jQuery, GSAP, Lenis and Swiper are all self-hosted. The single outbound script is the Scoby Analytics counter (`https://1x06e.s3y.io`, cookieless, German-hosted, no PII), injected into every page by `i18n_build.py` and declared in `/datenschutz`.
 - **18+ age gate (JMStV).** `js/age-gate.js` runs from `<head>` and veils the page before first paint; the visitor self-declares and the answer is stamped in `localStorage` for 30 days. Paired with the `age-de-meta-label` meta tag German filters read. It is a §5 self-declaration, not an identity-checking AVS.
 - **Nine service pages × four languages.** One folder per massage, named in its own language (`/massagen/nuru-massage/`, `/en/massages/nuru-massage/`, `/es/servicios/masaje-erotico-nuru/`, `/it/servizi/massaggio-nuru/`), all sharing `css/service.css`, the only stylesheet written from scratch.
 - **`hreflang` across all 52 pages,** with German as `x-default`, a `DE · EN · ES · IT` switcher in the header, and `LocalBusiness`, `Service` and `FAQPage` JSON-LD generated from the visible HTML of each page.
@@ -51,7 +51,7 @@ fonts/                  # self-hosted woff2 (Cinzel Decorative, Ovo, Manrope, Br
 imgs/                   # photography, favicons, open graph
 wrangler.jsonc          # Cloudflare Workers Static Assets config
 scripts/hooks/post-commit  # commit on main → npx wrangler deploy
-.github/workflows/      # push to main → pings a deploy hook that deploys nothing (see Deployment)
+.github/workflows/      # push to main → wrangler deploy (see Deployment)
 ```
 
 ## Building the four languages
@@ -89,14 +89,16 @@ npx wrangler deploy
 
 `.assetsignore` keeps repository-only files (`.git`, `inspiration/`, `wrangler.jsonc`, `docs/`, caches) out of the published bundle.
 
-Every commit on `main` deploys, through `scripts/hooks/post-commit`. Activate it once per clone:
+Every push to `main` deploys, through `.github/workflows/deploy.yml`, which checks the commit out and runs `wrangler deploy` with two repository secrets: `CLOUDFLARE_API_TOKEN` (needs Workers Scripts edit, plus zone read and SSL edit for the custom domains) and `CLOUDFLARE_ACCOUNT_ID`. Unlike a local deploy, CI publishes **the commit**, not the working tree.
+
+Until 2026-10-17 the workflow only `curl`ed a Pages-style deploy hook from a `CF_DEPLOY_HOOK` secret. **That deployed nothing**: the `curl` returned 200 and the Action went green while every deployment on record came from a local `wrangler`. It left the live site four commits behind for two hours without a single warning. Keep that in mind for any "it's green" claim about this pipeline — check `wrangler deployments list`.
+
+`scripts/hooks/post-commit` also deploys and pushes from the machine that commits on `main`. Activate it once per clone:
 
 ```bash
 git config core.hooksPath scripts/hooks
 ```
 
-Commits on any other branch are skipped. Note that `wrangler deploy` publishes **what is on disk**, not what you just committed — uncommitted changes go live too.
-
-`.github/workflows/deploy.yml` pings the Cloudflare deploy hook in the `CF_DEPLOY_HOOK` secret on every push to `main`. **It does not actually deploy**: the `curl` returns 200 and the Action goes green, but no deployment of this Worker originates from it — every deployment on record has `source: wrangler`. On 2026-10-17 that silently left the live site four commits behind for two hours. The local hook is the workaround; fixing the workflow (a `CLOUDFLARE_API_TOKEN` secret and `cloudflare/wrangler-action`) would replace it.
+Commits on any other branch are skipped. Note that a local `wrangler deploy` publishes **what is on disk**, not what you just committed — uncommitted changes go live too. Once CI is trusted, the deploy half of that hook is redundant and only the `git push` needs to stay.
 
 Redirecting `www` to the apex is **not** in `_redirects` — Workers Static Assets rejects any rule carrying a hostname and fails the whole deploy. It lives as a zone Single Redirect rule (`http_request_dynamic_redirect`), which is Cloudflare dashboard configuration and not in this repository.
