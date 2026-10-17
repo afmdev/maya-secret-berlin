@@ -6,6 +6,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: curl -fsS -X POST "$HOOK" -o /dev/null
+      - uses: actions/checkout@v4
+      # El deploy hook de Pages devolvia 200 sin desplegar nada: este proyecto
+      # es un Worker con Static Assets, no Pages. Aqui se despliega de verdad.
+      - run: npx --yes wrangler@4 deploy
         env:
-          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
