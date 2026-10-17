@@ -67,6 +67,17 @@ LANGS = {
     },
 }
 ORDER = ['de', 'en', 'es', 'it']
+# Nombre del idioma en su propio idioma: lo que espera ver quien no entiende
+# el idioma de la pagina en la que esta.
+NATIVE = {'de': 'Deutsch', 'en': 'English', 'es': 'Español', 'it': 'Italiano'}
+
+# Banderas: cuatro SVG propios en imgs/flags/ (los emoji de bandera no se
+# dibujan en Windows). Van como <img> para que el navegador las cachee en vez
+# de repetir el trazado en cada pagina.
+def flag(l):
+    return (f'<img class="maya-lang__flag" src="/imgs/flags/{l}.svg" alt="" '
+            'width="20" height="15" decoding="async">')
+
 
 # Paginas legales: una sola version, en aleman, compartida por los cuatro idiomas.
 LEGAL = {'Impressum': '/impressum.html', 'Datenschutz': '/datenschutz.html'}
@@ -195,18 +206,34 @@ def head_meta(src, page, lang):
 
 
 def lang_switcher(src, page, lang):
-    """Un selector por menu, detras del enlace de FAQ (ultimo item)."""
-    links = ''.join(
-        '<a class="elementor-item maya-lang__link{}" href="{}" hreflang="{}" lang="{}">{}</a>'.format(
+    """Un desplegable por menu, detras del enlace de FAQ (ultimo item).
+
+    <details> nativo: abre con teclado y sin JS; js/lang-switch.js solo añade
+    cerrar al pulsar fuera o con Escape. El panel es un <div> y no un <ul>:
+    SmartMenus toma cualquier <ul> del menu por sub-menu suyo, busca el enlace
+    padre que no existe y deja la cabecera a medio montar.
+    """
+    options = ''.join(
+        '<a class="maya-lang__link{}" href="{}" hreflang="{}" '
+        'lang="{}"{}>{}<span>{}</span></a>'.format(
             ' is-current' if l == lang else '', url_of(page, l)[len(SITE):],
-            LANGS[l]['lang'].split('-')[0], LANGS[l]['lang'].split('-')[0], LANGS[l]['label'])
+            l, l, ' aria-current="page"' if l == lang else '', flag(l), NATIVE[l])
         for l in ORDER)
-    li = f'<li class="menu-item maya-lang">{links}</li>'
+    li = ('<li class="menu-item maya-lang">'
+          '<details class="maya-lang__box">'
+          f'<summary class="elementor-item maya-lang__toggle">{flag(lang)}'
+          f'<span class="maya-lang__code">{lang.upper()}</span>'
+          '<span class="maya-lang__caret" aria-hidden="true"></span></summary>'
+          f'<div class="maya-lang__panel">{options}</div>'
+          '</details></li>')
     # El texto de FAQ ya esta traducido, asi que el ancla se busca por su href;
     # el orden de los atributos cambia entre plantillas, de ahi el [^>]*.
     faq_url = out_path('faq.html', lang)
     faq_item = re.compile(r'(<li[^>]*>\s*<a\s[^>]*href="/?' + re.escape(faq_url) + r'"[^>]*>[^<]*</a>\s*</li>)')
-    return faq_item.sub(lambda m: m.group(1) + li, src)
+    src = faq_item.sub(lambda m: m.group(1) + li, src)
+    if 'lang-switch.js' not in src:
+        src = src.replace('</body>', '\t<script src="/js/lang-switch.js" defer></script>\n</body>', 1)
+    return src
 
 
 def build_page(page, lang, dic):

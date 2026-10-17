@@ -1008,28 +1008,124 @@ button:focus-visible,
 	text-underline-offset: 3px;
 }
 
-/* Selector de idioma en el menu: el idioma activo en dorado, los otros en
-   gris para que no compitan con los enlaces de navegacion. */
+/* Selector de idioma en el menu: un <details> nativo, asi abre y cierra con
+   teclado y sin JS (js/lang-switch.js solo cierra al pulsar fuera o con Esc).
+   Cerrado ocupa bandera + codigo para no competir con los enlaces del menu. */
 .menu-item.maya-lang {
 	display: flex;
 	align-items: center;
-	gap: 10px;
 }
 
-.maya-lang__link {
+.maya-lang__box {
+	position: relative;
+}
+
+.maya-lang__toggle {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	cursor: pointer;
+	/* El triangulo lo pinta .maya-lang__caret; el marcador nativo sobra. */
+	list-style: none;
 	font-size: 0.72rem;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	opacity: 0.55;
-	padding: 0 !important;
+	opacity: 0.7;
+}
+
+.maya-lang__toggle::-webkit-details-marker {
+	display: none;
+}
+
+/* El menu da fondo gris al .elementor-item en :hover y :focus; el boton de
+   idioma se marca subiendo la opacidad, sin fondo. */
+.maya-lang__toggle:hover,
+.maya-lang__toggle:focus,
+.elementor-nav-menu--dropdown .maya-lang__toggle:focus {
+	background-color: transparent;
+}
+
+.maya-lang__toggle:hover,
+.maya-lang__toggle:focus-visible,
+.maya-lang__box[open] .maya-lang__toggle {
+	opacity: 1;
+}
+
+/* El kit redondea todas las imagenes 24px; una bandera de 20x15 no. */
+.maya-lang img.maya-lang__flag {
+	display: block;
+	width: 20px;
+	height: 15px;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 25%, transparent);
+}
+
+.maya-lang__caret {
+	width: 0;
+	height: 0;
+	border: 4px solid transparent;
+	border-bottom: 0;
+	border-top-color: currentColor;
+	transition: transform 0.2s ease;
+}
+
+.maya-lang__box[open] .maya-lang__caret {
+	transform: rotate(180deg);
+}
+
+.maya-lang__panel {
+	position: absolute;
+	top: calc(100% + 12px);
+	inset-inline-end: 0;
+	z-index: 120;
+	min-width: 168px;
+	padding: 6px;
+	background: var(--e-global-color-mayaerotikmassage_accent_5);
+	border: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_1) 40%, transparent);
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.maya-lang__link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 10px !important;
+	font-size: 0.8rem;
+	white-space: nowrap;
+	color: var(--e-global-color-mayaerotikmassage_primary_font_color);
+	opacity: 0.7;
 }
 
 .maya-lang__link:hover,
 .maya-lang__link:focus {
 	opacity: 1;
+	background: var(--e-global-color-mayaerotikmassage_accent_7);
 }
 
 .maya-lang__link.is-current {
 	opacity: 1;
 	color: var(--e-global-color-mayaerotikmassage_accent_4);
+}
+
+/* En el menu movil el panel flotante se saldria del contenedor: ahi la lista
+   cae en el flujo, debajo del boton, con la sangria de los demas enlaces. */
+.elementor-nav-menu--dropdown .maya-lang__toggle {
+	padding: 14px 20px;
+}
+
+.elementor-nav-menu--dropdown .maya-lang__link {
+	padding: 10px 20px !important;
+}
+
+.elementor-nav-menu--dropdown .maya-lang {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.elementor-nav-menu--dropdown .maya-lang__panel {
+	position: static;
+	min-width: 0;
+	border: 0;
+	box-shadow: none;
+	background: transparent;
 }
