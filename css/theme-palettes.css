@@ -438,6 +438,9 @@ button:focus-visible,
 	margin: 0 0 18px;
 	font-family: 'Cinzel Decorative', 'Ovo', serif;
 	font-size: clamp(30px, 4.6vw, 46px);
+	/* Sin esto hereda un interlineado apretado del tema: en cuanto la marca
+	   ocupaba dos lineas, la segunda se montaba encima de la primera. */
+	line-height: 1.15;
 	text-transform: uppercase;
 	letter-spacing: .1em;
 	text-indent: .1em;
