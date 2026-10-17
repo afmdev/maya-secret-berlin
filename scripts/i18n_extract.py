@@ -13,7 +13,7 @@ PAGES = ['src/index.html', 'src/masajes.html', 'src/faq.html', 'src/about.html']
 SKIP = re.compile(r'<(script|style|svg)\b.*?</\1>|<!--.*?-->|<script\b[^>]*/?>', re.S)
 # Solo estos meta llevan texto para humanos; el resto (viewport, generator,
 # feeds, favicons) no se traduce.
-META = re.compile(r'<meta\s+(?:name="(?:description|keywords)"|property="(?:og:title|og:description|og:image:alt|twitter:title|twitter:description)")[^>]*?content="([^"]*)"', re.I)
+META = re.compile(r'<meta\s+(?:name="(?:description|keywords|twitter:title|twitter:description)"|property="(?:og:title|og:description|og:image:alt)")[^>]*?content="([^"]*)"', re.I)
 # title/alt/aria-label/placeholder, menos los de <link> (titulos de feeds).
 TAG_ATTR = re.compile(r'<(?!link\b)[a-z][^>]*?\b(?:title|alt|aria-label|placeholder)="([^"]*)"', re.I)
 

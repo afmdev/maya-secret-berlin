@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Resumen legible por asistentes de IA (GEO):
+# https://mayaerotikmassage.com/llms.txt
+
 Sitemap: https://mayaerotikmassage.com/sitemap.xml

@@ -22,8 +22,13 @@
 	// El velo va aquí y no en la hoja: theme-palettes.css se carga al final del
 	// body y para entonces la página ya habría asomado.
 	var velo = document.createElement('style');
+	// El velo tapa hasta que la puerta existe; a partir de ahi tapa el panel,
+	// que es opaco y cubre la ventana entera. Asi el contenido sigue en pie
+	// para quien renderiza la pagina (buscadores, asistentes) sin que nadie
+	// lo vea antes de responder: lo mismo que ve quien ya ha entrado.
 	velo.textContent = 'html.maya-agegate-on{overflow:hidden}' +
-		'html.maya-agegate-on body>*:not(.maya-agegate){visibility:hidden}';
+		'html.maya-agegate-on:not(.maya-agegate-ready) body>*:not(.maya-agegate){visibility:hidden}' +
+		'.maya-agegate{position:fixed;inset:0;z-index:2147483000;background:#0D0A0C}';
 	document.head.appendChild(velo);
 
 	// La puerta es lo primero que se ve, asi que habla el idioma de la pagina:
@@ -70,7 +75,7 @@
 		gate.innerHTML = [
 			'<div class="maya-agegate__panel">',
 			'<p class="maya-agegate__brand">- Maya Erotik Massage Berlin -</p>',
-			'<h1 class="maya-agegate__title" id="maya-agegate-title">' + t.titulo + '</h1>',
+			'<p class="maya-agegate__title" id="maya-agegate-title">' + t.titulo + '</p>',
 			'<div class="hero-rule" aria-hidden="true">&#9670;</div>',
 			'<p class="maya-agegate__text">' + t.texto + '</p>',
 			'<div class="maya-agegate__actions">',
@@ -81,13 +86,24 @@
 			'</div>'
 		].join('');
 		document.body.appendChild(gate);
+		// La puerta ya tapa por si misma: se levanta el velo.
+		html.classList.add('maya-agegate-ready');
+
+		// El velo tapaba tambien para el lector de pantalla; la capa opaca no,
+		// asi que el resto de la pagina se marca inerte: fuera del foco, del
+		// raton y del arbol de accesibilidad, pero presente en el documento.
+		var tapado = [].slice.call(document.body.children).filter(function (el) {
+			return el !== gate;
+		});
+		tapado.forEach(function (el) { el.inert = true; });
 
 		var entrar = gate.querySelector('[data-agegate="in"]');
 		var salir = gate.querySelector('[data-agegate="out"]');
 
 		entrar.addEventListener('click', function () {
 			try { localStorage.setItem(KEY, Date.now()); } catch (e) { /* modo privado: vuelve a preguntar */ }
-			html.classList.remove('maya-agegate-on');
+			html.classList.remove('maya-agegate-on', 'maya-agegate-ready');
+			tapado.forEach(function (el) { el.inert = false; });
 			gate.remove();
 		});
 

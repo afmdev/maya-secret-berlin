@@ -13,7 +13,7 @@ para que no dependan de la profundidad de la carpeta.
 
     python3 scripts/i18n_build.py
 """
-import html, json, os, posixpath, re, subprocess, sys
+import html, json, os, posixpath, re, subprocess, sys, time
 from urllib.parse import quote
 
 SITE = 'https://mayaerotikmassage.com'
@@ -88,7 +88,7 @@ def flag(l):
 
 
 # Paginas legales: una sola version, en aleman, compartida por los cuatro idiomas.
-LEGAL = {'Impressum': '/impressum.html', 'Datenschutz': '/datenschutz.html'}
+LEGAL = {'Impressum': '/impressum', 'Datenschutz': '/datenschutz'}
 
 # Mensaje con el que se abre WhatsApp: deja claro el limite antes del primer
 # mensaje, asi que va en el idioma de la pagina.
@@ -105,7 +105,7 @@ WA_TEXT = {
 }
 
 SKIP = re.compile(r'<(script|style|svg)\b.*?</\1>|<!--.*?-->', re.S)
-META = re.compile(r'(<meta\s+(?:name="(?:description|keywords)"|property="(?:og:title|og:description|og:image:alt|twitter:title|twitter:description)")[^>]*?content=")([^"]*)(")', re.I)
+META = re.compile(r'(<meta\s+(?:name="(?:description|keywords|twitter:title|twitter:description)"|property="(?:og:title|og:description|og:image:alt)")[^>]*?content=")([^"]*)(")', re.I)
 TAG_ATTR = re.compile(r'(<(?!link\b)[a-z][^>]*?\b(?:title|alt|aria-label|placeholder)=")([^"]*)(")', re.I)
 
 
@@ -126,8 +126,18 @@ def out_path(page, lang):
 
 
 def url_of(page, lang):
+    """URL publica: sin index.html y sin .html, que es lo que sirve Cloudflare.
+
+    html_handling=auto-trailing-slash redirige /faq.html a /faq, asi que apuntar
+    a la forma con extension costaba un salto 307 en cada enlace y dejaba la
+    canonica senalando a una URL que redirige.
+    """
     p = out_path(page, lang)
-    return SITE + '/' + (p[:-len('index.html')] if p.endswith('index.html') else p)
+    if p.endswith('index.html'):
+        p = p[:-len('index.html')]
+    elif p.endswith('.html'):
+        p = p[:-len('.html')]
+    return SITE + '/' + p
 
 
 def skip_ranges(src):
@@ -325,11 +335,15 @@ def redirects():
 def sitemap():
     rows = []
     for page in src_pages():
+        # La fecha sale de la plantilla: si el texto no ha cambiado, el sitemap
+        # tampoco debe decir que si.
+        stamp = time.strftime('%Y-%m-%d', time.gmtime(os.path.getmtime(posixpath.join(SRC, page))))
         for lang in ORDER:
             alts = ''.join(
                 f'\n\t\t<xhtml:link rel="alternate" hreflang="{LANGS[l]["lang"].split("-")[0]}" href="{url_of(page, l)}" />'
                 for l in ORDER)
-            rows.append(f'\t<url>\n\t\t<loc>{url_of(page, lang)}</loc>{alts}\n\t</url>')
+            alts += f'\n\t\t<xhtml:link rel="alternate" hreflang="x-default" href="{url_of(page, "de")}" />'
+            rows.append(f'\t<url>\n\t\t<loc>{url_of(page, lang)}</loc>\n\t\t<lastmod>{stamp}</lastmod>{alts}\n\t</url>')
     open('sitemap.xml', 'w', encoding='utf-8').write(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
@@ -372,7 +386,7 @@ def main():
         print(f'{lang}: {len(src_pages())} paginas')
     redirects()
     sitemap()
-    subprocess.run([sys.executable, 'scripts/faqjson.py', '--write'] + built, check=True)
+    subprocess.run([sys.executable, 'scripts/schema.py', '--write'] + built, check=True)
     print(f'{len(built)} paginas, _redirects y sitemap.xml generados')
 
 

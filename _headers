@@ -1,0 +1,24 @@
+# Cabeceras de los assets estaticos (Cloudflare Workers Static Assets).
+# Sin esto todo sale con `max-age=0, must-revalidate`: el navegador revalida
+# fuentes, fotos y vendor en cada visita. Los ficheros con hash en el nombre no
+# existen aqui, asi que un cambio de imagen exige renombrarla.
+
+/imgs/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=604800
+
+/js/*
+  Cache-Control: public, max-age=604800
+
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
