@@ -609,6 +609,9 @@ def main():
     redirects()
     sitemap()
     subprocess.run([sys.executable, 'scripts/schema.py', '--write'] + built, check=True)
+    # La purga del CSS va la ultima: mira las paginas ya construidas para
+    # saber que selectores se usan de verdad.
+    subprocess.run([sys.executable, 'scripts/css_purge.py'], check=True)
     print(f'{len(built)} paginas, _redirects y sitemap.xml generados')
 
 
