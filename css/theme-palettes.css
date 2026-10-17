@@ -1049,7 +1049,7 @@ button:focus-visible,
 }
 
 .maya-lang__toggle:hover,
-.maya-lang__box[open] .maya-lang__toggle {
+.maya-lang__box.is-open .maya-lang__toggle {
 	opacity: 1;
 }
 
@@ -1076,7 +1076,7 @@ button:focus-visible,
 	transition: transform 0.2s ease;
 }
 
-.maya-lang__box[open] .maya-lang__caret {
+.maya-lang__box.is-open .maya-lang__caret {
 	transform: rotate(180deg);
 }
 
@@ -1093,6 +1093,24 @@ button:focus-visible,
 	background: var(--e-global-color-mayaerotikmassage_accent_5);
 	border: 1px solid color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_1) 40%, transparent);
 	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+	/* Baja al abrir y sube al cerrar; la clase la pone js/lang-switch.js, que
+	   retrasa el plegado del <details> hasta que termina la subida. */
+	opacity: 0;
+	transform: translateY(-8px);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.maya-lang__box.is-open .maya-lang__panel {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.maya-lang__panel {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
 }
 
 /* El relleno es la zona de toque: la bandera sola son 24x18, demasiado poco
