@@ -12,11 +12,15 @@
 /js/vendor/*
   Cache-Control: public, max-age=31536000, immutable
 
+# css y js no llevan hash en el nombre, asi que una semana de cache significaba
+# una semana sirviendo la version vieja a quien ya habia entrado: se arreglaba
+# algo y no lo veia nadie. no-cache no es "no guardes", es "pregunta antes de
+# usar": el ETag devuelve 304 y no se baja nada si no ha cambiado.
 /css/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: no-cache
 
 /js/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: no-cache
 
 /*
   Strict-Transport-Security: max-age=31536000

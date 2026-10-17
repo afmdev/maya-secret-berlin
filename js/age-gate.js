@@ -74,7 +74,7 @@
 		gate.setAttribute('aria-labelledby', 'maya-agegate-title');
 		gate.innerHTML = [
 			'<div class="maya-agegate__panel">',
-			'<p class="maya-agegate__brand">- Maya Secret -</p>',
+			'<p class="maya-agegate__brand">- Maya Erotik Massage Berlin -</p>',
 			'<p class="maya-agegate__title" id="maya-agegate-title">' + t.titulo + '</p>',
 			'<div class="hero-rule" aria-hidden="true">&#9670;</div>',
 			'<p class="maya-agegate__text">' + t.texto + '</p>',

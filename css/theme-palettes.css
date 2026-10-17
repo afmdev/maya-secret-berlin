@@ -415,11 +415,21 @@ button:focus-visible,
 	overflow-y: auto;
 }
 
+/* El panel se ensancha a 900px para que la marca quepa en una linea; el texto
+   corrido se queda en 560px, que es el ancho comodo de lectura. Antes el panel
+   media 560 y la marca lo desbordaba por la derecha: entre 768 y 1100px se
+   salia de la ventana. */
 .maya-agegate__panel {
-	width: min(560px, 100%);
+	width: min(900px, 100%);
 	margin: auto;
 	text-align: center;
 	color: var(--e-global-color-mayaerotikmassage_accent_6);
+}
+
+.maya-agegate .maya-agegate__title,
+.maya-agegate .maya-agegate__text,
+.maya-agegate .maya-agegate__note {
+	max-width: 560px;
 }
 
 .maya-agegate .hero-rule {
@@ -437,10 +447,13 @@ button:focus-visible,
 .maya-agegate .maya-agegate__brand {
 	margin: 0 0 18px;
 	font-family: 'Cinzel Decorative', 'Ovo', serif;
-	font-size: clamp(30px, 4.6vw, 46px);
-	/* Sin esto hereda un interlineado apretado del tema: en cuanto la marca
-	   ocupaba dos lineas, la segunda se montaba encima de la primera. */
-	line-height: 1.15;
+	/* Entra de una linea en el panel de 900px a partir de ~1000px de ventana;
+	   por debajo parte en dos, que es lo previsto. */
+	font-size: clamp(24px, 3.1vw, 38px);
+	/* Cinzel Decorative tiene astas largas arriba y abajo. Sin interlineado
+	   propio heredaba uno apretado del tema y las dos lineas se montaban una
+	   sobre otra; 1.4 deja aire de sobra entre la de arriba y la de abajo. */
+	line-height: 1.4;
 	text-transform: uppercase;
 	letter-spacing: .1em;
 	text-indent: .1em;
@@ -448,7 +461,7 @@ button:focus-visible,
 }
 
 .maya-agegate .maya-agegate__title {
-	margin: 0;
+	margin: 0 auto;
 	font-family: 'Ovo', serif;
 	font-size: clamp(17px, 2.1vw, 24px);
 	font-weight: 400;
@@ -456,7 +469,7 @@ button:focus-visible,
 }
 
 .maya-agegate .maya-agegate__text {
-	margin: 0 0 14px;
+	margin: 0 auto 14px;
 	font-size: 15px;
 	line-height: 1.7;
 	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 80%, transparent);
@@ -509,7 +522,7 @@ button:focus-visible,
 }
 
 .maya-agegate .maya-agegate__note {
-	margin: 0;
+	margin: 0 auto;
 	font-size: 12px;
 	line-height: 1.7;
 	color: color-mix(in srgb, var(--e-global-color-mayaerotikmassage_accent_6) 52%, transparent);
