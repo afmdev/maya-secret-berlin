@@ -13,7 +13,7 @@ para que no dependan de la profundidad de la carpeta.
 
     python3 scripts/i18n_build.py
 """
-import html, json, os, posixpath, re, subprocess, sys, time
+import glob, html, json, os, posixpath, re, subprocess, sys, time
 from urllib.parse import quote
 
 SITE = 'https://mayaerotikmassage.com'
@@ -23,6 +23,61 @@ RITUALS = ['clasico', 'tantrico', 'cuerpo-a-cuerpo', 'nuru', 'lingam', 'yoni',
            'sensual', 'oriental', 'mutuo']
 SRC_RITUAL = 'servicios/masaje-erotico-{}/index.html'
 ASSET_DIRS = ('css', 'js', 'imgs', 'fonts', 'lib')
+
+# Nombres de foto por idioma. Google Imagenes lee el nombre del fichero, y
+# quien busca "erotische massage berlin" no ve su idioma en un
+# maya-masaje-erotico-berlin-*.jpg. El fichero en disco sigue siendo uno solo:
+# los nombres traducidos se sirven con una regla de proxy (200) en _redirects,
+# asi que esto no duplica ni un byte.
+IMG_PREFIX = {'es': 'maya-masaje-erotico-berlin', 'de': 'maya-erotische-massage-berlin',
+              'en': 'maya-erotic-massage-berlin', 'it': 'maya-massaggio-erotico-berlino'}
+IMG_SUFFIX = {
+    'banador-blanco-detalle': {'de': 'badeanzug-weiss-detail', 'en': 'white-swimsuit-detail',
+                               'it': 'costume-bianco-dettaglio'},
+    'banador-blanco-piscina': {'de': 'badeanzug-weiss-pool', 'en': 'white-swimsuit-pool',
+                               'it': 'costume-bianco-piscina'},
+    'banador-blanco-sombrero': {'de': 'badeanzug-weiss-hut', 'en': 'white-swimsuit-hat',
+                                'it': 'costume-bianco-cappello'},
+    'banador-rosa-palmeras': {'de': 'badeanzug-rosa-palmen', 'en': 'pink-swimsuit-palms',
+                              'it': 'costume-rosa-palme'},
+    'banador-rosa-reflejo': {'de': 'badeanzug-rosa-spiegelung', 'en': 'pink-swimsuit-reflection',
+                             'it': 'costume-rosa-riflesso'},
+    'banador-rosa-terraza': {'de': 'badeanzug-rosa-terrasse', 'en': 'pink-swimsuit-terrace',
+                             'it': 'costume-rosa-terrazza'},
+    'lenceria-negra-cama': {'de': 'dessous-schwarz-bett', 'en': 'black-lingerie-bed',
+                            'it': 'lingerie-nera-letto'},
+    'lenceria-negra-dormitorio': {'de': 'dessous-schwarz-schlafzimmer',
+                                  'en': 'black-lingerie-bedroom', 'it': 'lingerie-nera-camera'},
+    'lenceria-negra-tumbada': {'de': 'dessous-schwarz-liegend', 'en': 'black-lingerie-lying',
+                               'it': 'lingerie-nera-distesa'},
+    'sensual-borde-piscina': {'de': 'sinnlich-poolrand', 'en': 'sensual-poolside',
+                              'it': 'sensuale-bordo-piscina'},
+    'sensual-piscina-agua': {'de': 'sinnlich-pool-wasser', 'en': 'sensual-pool-water',
+                             'it': 'sensuale-piscina-acqua'},
+    'suite-dormitorio': {'de': 'suite-schlafzimmer', 'en': 'suite-bedroom',
+                         'it': 'suite-camera'},
+    'suite-luz-calida': {'de': 'suite-warmes-licht', 'en': 'suite-warm-light',
+                         'it': 'suite-luce-calda'},
+}
+# El retrato no lleva el prefijo de "masaje": es la masajista.
+IMG_NAMES = {'maya-masajista-erotica-berlin-retrato': {
+    'es': 'maya-masajista-erotica-berlin-retrato', 'de': 'maya-erotische-masseurin-berlin-portraet',
+    'en': 'maya-erotic-masseuse-berlin-portrait', 'it': 'maya-massaggiatrice-erotica-berlino-ritratto'}}
+for _s, _t in IMG_SUFFIX.items():
+    IMG_NAMES[f"{IMG_PREFIX['es']}-{_s}"] = {
+        l: f'{IMG_PREFIX[l]}-{_t[l]}' if l != 'es' else f"{IMG_PREFIX['es']}-{_s}" for l in IMG_PREFIX}
+# maya-masaje-erotico-berlin-portada.jpg se queda fuera: es un fondo de CSS
+# (una hoja para los cuatro idiomas), no hay donde cambiarle el nombre.
+
+IMG_TAG = re.compile(r'<img\b[^>]*?\bsrc="(/imgs/maya-[^"]+\.jpg)"[^>]*?>', re.S)
+# Las fotos verticales ocupan media columna en escritorio y toda la pantalla en
+# movil. sizes="auto" deja que el navegador mida el hueco real, pero la norma
+# solo lo permite con loading="lazy"; la foto del LCP carga con prioridad, asi
+# que esa lleva el calculo a mano.
+SIZES_EAGER = '(max-width: 1024px) 100vw, 50vw'
+# Fotos de cada pagina construida, con el nombre que les toca en ese idioma:
+# lo rellena build_page y lo lee sitemap().
+PAGE_IMGS = {}
 
 LANGS = {
     'de': {
@@ -214,6 +269,48 @@ def rewrite_urls(src, page, lang):
     return src
 
 
+def webp_srcset(stem):
+    """Las variantes que haya dejado scripts/imgs_build.py para esa foto."""
+    anchos = []
+    for f in glob.glob(f'imgs/{glob.escape(stem)}-*.webp'):
+        m = re.search(r'-(\d+)\.webp$', f)
+        if m:
+            anchos.append(int(m.group(1)))
+    return ', '.join(f'/imgs/{stem}-{w}.webp {w}w' for w in sorted(anchos))
+
+
+def pictures(src):
+    """Envuelve cada foto en <picture> con sus variantes WebP.
+
+    El <img> original se queda dentro como respaldo: si el navegador no
+    entiende WebP (Safari anterior a 14) descarga el JPEG de siempre.
+    """
+    def wrap(m):
+        tag = m.group(0)
+        stem = posixpath.basename(m.group(1))[:-len('.jpg')]
+        srcset = webp_srcset(stem)
+        if not srcset:
+            return tag
+        sizes = 'auto' if 'loading="lazy"' in tag else SIZES_EAGER
+        return f'<picture><source type="image/webp" srcset="{srcset}" sizes="{sizes}">{tag}</picture>'
+
+    return IMG_TAG.sub(wrap, src)
+
+
+def localize_imgs(src, lang):
+    """Nombres de foto al idioma de la pagina (JPEG y variantes WebP de un golpe)."""
+    if lang == 'es':
+        return src
+    for stem, names in IMG_NAMES.items():
+        src = src.replace(f'/imgs/{stem}', f'/imgs/{names[lang]}')
+    return src
+
+
+def page_imgs(src):
+    """Fotos de contenido de una pagina ya construida, para el sitemap de imagenes."""
+    return sorted(set(re.findall(r'/imgs/maya-[A-Za-z0-9-]+\.jpg', src)))
+
+
 def head_meta(src, page, lang):
     cfg = LANGS[lang]
     url = url_of(page, lang)
@@ -307,9 +404,12 @@ def build_page(page, lang, dic):
     src = open(posixpath.join(SRC, page), encoding='utf-8').read()
     src = translate(src, dic) if lang != 'es' else src
     src = rewrite_urls(src, page, lang)
+    src = pictures(src)
+    src = localize_imgs(src, lang)
     src = head_meta(src, page, lang)
     src = lang_switcher(src, page, lang)
     src = mobile_submenu(src, page, lang)
+    PAGE_IMGS[page, lang] = page_imgs(src)
     dest = out_path(page, lang)
     os.makedirs(os.path.dirname(dest) or '.', exist_ok=True)
     open(dest, 'w', encoding='utf-8').write(src)
@@ -335,7 +435,33 @@ def redirects():
         lines.append(f'/{page} {new} 301')
         if page.endswith('/index.html'):
             lines.append(f'/{page[:-len("index.html")]} {new} 301')
+    lines += img_redirects()
+    # Workers Static Assets admite 2.000 reglas estaticas. Si un dia se pasa,
+    # el deploy las ignora en silencio y las fotos traducidas dan 404.
+    reglas = [l for l in lines if not l.startswith('#')]
+    assert len(reglas) <= 2000, f'{len(reglas)} reglas en _redirects, el limite es 2000'
     open('_redirects', 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
+
+
+def img_redirects():
+    """Cada nombre de foto traducido sirve el fichero real sin copiarlo.
+
+    El 200 es un proxy, no un salto: el navegador pide
+    /imgs/maya-erotische-massage-berlin-suite-camera-960.webp y recibe los
+    bytes de la version española con esa URL. Un solo fichero en disco y una
+    URL por idioma, que es lo que indexa Google Imagenes.
+    """
+    lines = ['# Fotos: un nombre por idioma, un solo fichero en disco (proxy 200).']
+    for stem, names in sorted(IMG_NAMES.items()):
+        files = [f'{stem}.jpg'] + [f'{stem}-{w}.webp' for w in sorted(
+            int(re.search(r'-(\d+)\.webp$', f).group(1))
+            for f in glob.glob(f'imgs/{glob.escape(stem)}-*.webp'))]
+        for lang in ORDER:
+            if lang == 'es':
+                continue
+            for f in files:
+                lines.append(f'/imgs/{f.replace(stem, names[lang], 1)} /imgs/{f} 200')
+    return lines
 
 
 def sitemap():
@@ -349,11 +475,18 @@ def sitemap():
                 f'\n\t\t<xhtml:link rel="alternate" hreflang="{LANGS[l]["lang"].split("-")[0]}" href="{url_of(page, l)}" />'
                 for l in ORDER)
             alts += f'\n\t\t<xhtml:link rel="alternate" hreflang="x-default" href="{url_of(page, "de")}" />'
-            rows.append(f'\t<url>\n\t\t<loc>{url_of(page, lang)}</loc>\n\t\t<lastmod>{stamp}</lastmod>{alts}\n\t</url>')
+            # Las fotos no salen de ningun enlace rastreable: sin esto, Google
+            # Imagenes solo las ve si llega a renderizar la pagina. Google
+            # ignora image:caption y image:title desde 2022, solo lee image:loc.
+            imgs = ''.join(f'\n\t\t<image:image>\n\t\t\t<image:loc>{SITE}{u}</image:loc>\n\t\t</image:image>'
+                           for u in PAGE_IMGS.get((page, lang), []))
+            rows.append(f'\t<url>\n\t\t<loc>{url_of(page, lang)}</loc>\n\t\t<lastmod>{stamp}</lastmod>{alts}{imgs}\n\t</url>')
     open('sitemap.xml', 'w', encoding='utf-8').write(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
-        'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + '\n'.join(rows) + '\n</urlset>\n')
+        'xmlns:xhtml="http://www.w3.org/1999/xhtml" '
+        'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
+        + '\n'.join(rows) + '\n</urlset>\n')
 
 
 def load_dict(lang):
@@ -379,6 +512,8 @@ def load_dict(lang):
 
 
 def main():
+    # Primero las variantes WebP: pictures() mira que ficheros existen.
+    subprocess.run([sys.executable, 'scripts/imgs_build.py'], check=True)
     built = []
     for lang in ORDER:
         dic = {}

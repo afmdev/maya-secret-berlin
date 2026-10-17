@@ -62,6 +62,14 @@ body.elementor-kit-5 {
 	   con el sitio. Esta es la única panorámica en alta resolución del set y su
 	   tercio superior es casi negro, así que el H1 en crema se lee sin overlay. */
 	background-image: url("../imgs/maya-masaje-erotico-berlin-portada.jpg");
+	/* El JPEG de 2744 px pesa 492 KB y es el LCP de la portada. image-set deja
+	   que el navegador coja el WebP (138 KB) y, en una pantalla normal, la
+	   variante de 1440 (39 KB). La línea de arriba es el respaldo para quien
+	   no entienda image-set, así que las dos se quedan y en ese orden. */
+	background-image: image-set(
+		url("../imgs/maya-masaje-erotico-berlin-portada-1440.webp") type("image/webp") 1x,
+		url("../imgs/maya-masaje-erotico-berlin-portada-2744.webp") type("image/webp") 2x,
+		url("../imgs/maya-masaje-erotico-berlin-portada.jpg") type("image/jpeg") 1x);
 	background-position: center center;
 	background-size: cover;
 }
@@ -1257,4 +1265,12 @@ button:focus-visible,
 		opacity: 1;
 		transform: none;
 	}
+}
+
+/* scripts/i18n_build.py envuelve cada foto en <picture> para ofrecer las
+   variantes WebP. Es una caja inline que no existia cuando se escribio el
+   layout: display:contents la borra del arbol de cajas y el <img> sigue
+   siendo, a efectos de CSS, hijo directo de su contenedor. */
+picture {
+	display: contents;
 }

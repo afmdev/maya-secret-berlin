@@ -35,7 +35,10 @@
 	const muestra = i => {
 		actual = (i + fotos.length) % fotos.length;
 		const img = fotos[actual];
-		full.src = img.currentSrc || img.src;
+		// src y no currentSrc: desde que las fotos van en <picture>, currentSrc
+		// es la variante WebP que cabia en la miniatura (480 px a veces), y el
+		// visor la ampliaria borrosa. El src es siempre el JPEG a tamano completo.
+		full.src = img.src;
 		full.alt = img.alt;
 	};
 
