@@ -734,7 +734,8 @@
 		margin-top: 32px
 	}
 
-	.svc-main .svc-side-photo img {
+	.svc-main .svc-side-photo img,
+	.svc-main .svc-gal {
 		height: auto;
 		aspect-ratio: 4/5
 	}
