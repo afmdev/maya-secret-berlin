@@ -41,7 +41,7 @@ css/theme-palettes.css  # "Noir Vino" palette — colour tokens only
 css/service.css         # service page layout (hand-written)
 css/mega-menu.css       # CSS-only mega menu
 css/spotlight.css       # grayscale → colour under the cursor
-css/app-late.css        # non-critical CSS, loaded at the end of <body>
+css/app-late.css        # rest of the CSS, split out of app.css
 js/age-gate.js          # 18+ gate
 js/revoza-scroll.js     # Lenis + GSAP scroll choreography
 js/svc-lightbox.js      # <dialog> lightbox for service photos

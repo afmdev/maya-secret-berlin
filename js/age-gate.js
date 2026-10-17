@@ -19,8 +19,8 @@
 
 	html.classList.add('maya-agegate-on');
 
-	// El velo va aquí y no en la hoja: theme-palettes.css se carga al final del
-	// body y para entonces la página ya habría asomado.
+	// El velo va aquí y no en la hoja: nace con el script, antes de que ninguna
+	// hoja haya llegado, así que tapa aunque una tarde o falle.
 	var velo = document.createElement('style');
 	// El velo tapa hasta que la puerta existe; a partir de ahi tapa el panel,
 	// que es opaco y cubre la ventana entera. Asi el contenido sigue en pie
