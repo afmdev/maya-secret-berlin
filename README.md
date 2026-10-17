@@ -50,7 +50,8 @@ js/vendor/              # gsap, ScrollTrigger, SplitText, lenis
 fonts/                  # self-hosted woff2 (Cinzel Decorative, Ovo, Manrope, Bricolage Grotesque)
 imgs/                   # photography, favicons, open graph
 wrangler.jsonc          # Cloudflare Workers Static Assets config
-.github/workflows/      # push to main → pings the Cloudflare deploy hook
+scripts/hooks/post-commit  # commit on main → npx wrangler deploy
+.github/workflows/      # push to main → pings a deploy hook that deploys nothing (see Deployment)
 ```
 
 ## Building the four languages
@@ -88,4 +89,14 @@ npx wrangler deploy
 
 `.assetsignore` keeps repository-only files (`.git`, `inspiration/`, `wrangler.jsonc`, `docs/`, caches) out of the published bundle.
 
-A push to `main` runs `.github/workflows/deploy.yml`, which pings the Cloudflare deploy hook stored in the `CF_DEPLOY_HOOK` secret — so merging to `main` is all a deploy takes.
+Every commit on `main` deploys, through `scripts/hooks/post-commit`. Activate it once per clone:
+
+```bash
+git config core.hooksPath scripts/hooks
+```
+
+Commits on any other branch are skipped. Note that `wrangler deploy` publishes **what is on disk**, not what you just committed — uncommitted changes go live too.
+
+`.github/workflows/deploy.yml` pings the Cloudflare deploy hook in the `CF_DEPLOY_HOOK` secret on every push to `main`. **It does not actually deploy**: the `curl` returns 200 and the Action goes green, but no deployment of this Worker originates from it — every deployment on record has `source: wrangler`. On 2026-10-17 that silently left the live site four commits behind for two hours. The local hook is the workaround; fixing the workflow (a `CLOUDFLARE_API_TOKEN` secret and `cloudflare/wrangler-action`) would replace it.
+
+Redirecting `www` to the apex is **not** in `_redirects` — Workers Static Assets rejects any rule carrying a hostname and fails the whole deploy. It lives as a zone Single Redirect rule (`http_request_dynamic_redirect`), which is Cloudflare dashboard configuration and not in this repository.

@@ -1,0 +1,23 @@
+#!/bin/sh
+# Despliega a Cloudflare despues de cada commit en main.
+#
+# El workflow de .github/ solo hace curl a un deploy hook: devuelve 200, la
+# Action sale verde y no despliega nada. El 17/10/2026 eso dejo la web cuatro
+# commits atras durante dos horas sin un solo aviso. Hasta que ese hook este
+# arreglado, el despliegue lo hace esta maquina.
+#
+# Se activa una vez por clon:
+#     git config core.hooksPath scripts/hooks
+#
+# Ojo: wrangler sube lo que hay EN DISCO, no lo que acabas de commitear. Si
+# quedan cambios sin commitear, tambien se publican.
+
+[ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+
+echo "post-commit: desplegando a Cloudflare..."
+if npx --yes wrangler deploy; then
+	echo "post-commit: desplegado."
+else
+	echo "post-commit: EL DESPLIEGUE HA FALLADO. La web sigue en la version anterior." >&2
+	exit 1
+fi
