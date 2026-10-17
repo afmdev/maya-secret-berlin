@@ -35,12 +35,27 @@
 	}
 
 	/* 2. Hamburguesa: el panel lo abre y lo cierra el CSS del tema con
-	   .elementor-active sobre el boton (selector hermano en app.css). */
+	   .elementor-active sobre el boton (selector hermano en app.css). El panel
+	   va en absoluto bajo un widget estrecho; con --stretch Elementor lo abria
+	   a lo ancho de la ventana, que es lo que hace ensanchar(). */
 	document.querySelectorAll('.elementor-menu-toggle').forEach(boton => {
+		const panel = boton.nextElementSibling;
+		const estira = panel && boton.closest('.elementor-nav-menu--stretch');
+		const ensanchar = () => {
+			const origen = panel.offsetParent ? panel.offsetParent.getBoundingClientRect().left : 0;
+			panel.style.left = `${-origen}px`;
+			panel.style.width = `${document.documentElement.clientWidth}px`;
+		};
 		boton.addEventListener('click', () => {
 			const abierto = boton.classList.toggle('elementor-active');
 			boton.setAttribute('aria-expanded', String(abierto));
+			if (estira && abierto) ensanchar();
 		});
+		if (estira) {
+			addEventListener('resize', () => {
+				if (boton.classList.contains('elementor-active')) ensanchar();
+			});
+		}
 	});
 
 	/* 3. Cabecera: fija por CSS; estas dos clases la esconden al bajar y la
