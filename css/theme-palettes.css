@@ -1351,9 +1351,14 @@ picture {
 }
 
 /* La cabecera de movil la pegaba arriba Elementor Pro (sticky:top en su
-   data-settings); position:sticky hace lo mismo sin JS ni espaciador. */
-[data-settings*='"sticky":"top"'] {
-	position: sticky;
-	top: 0;
-	z-index: 9998;
+   data-settings). position:sticky hace lo mismo sin JS ni espaciador, pero va
+   en el <header>: pegada al hijo solo aguanta lo que mide el padre, y el padre
+   es justo la cabecera. Hasta 1024 el <header> solo contiene esta barra (las
+   dos del escritorio llevan elementor-hidden-tablet). */
+@media (max-width: 1024px) {
+	header.elementor-location-header {
+		position: sticky;
+		top: 0;
+		z-index: 9998;
+	}
 }
