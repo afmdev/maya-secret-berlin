@@ -4,7 +4,7 @@
   "pages": [
    "src/index.html"
   ],
-  "words": 9
+  "words": 6
  },
  "Maya Erotik Massage Berlin": {
   "kind": "text",
@@ -1128,7 +1128,7 @@
   ],
   "words": 21
  },
- "El arte del contacto sin prisa. Masaje erótico, tantra y trabajo corporal sensual en su casa o en su hotel en Berlín: discreción absoluta, solo con cita previa.": {
+ "El arte del contacto sin prisa. Masaje erótico y tantra en su casa u hotel en Berlín. Discreto, solo con cita previa.": {
   "kind": "attr",
   "pages": [
    "src/index.html",
@@ -1144,7 +1144,7 @@
    "src/servicios/masaje-erotico-tantrico/index.html",
    "src/servicios/masaje-erotico-yoni/index.html"
   ],
-  "words": 28
+  "words": 22
  },
  "Maya Secret, masaje erótico en Berlín": {
   "kind": "attr",
@@ -1328,7 +1328,7 @@
   "pages": [
    "src/masajes.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Tantra": {
   "kind": "text",
@@ -1935,12 +1935,19 @@
   ],
   "words": 29
  },
+ "Dudas sobre el masaje erótico en Berlín: reservas, duración, precios, higiene y discreción. Solo con cita previa, +18.": {
+  "kind": "attr",
+  "pages": [
+   "src/faq.html"
+  ],
+  "words": 18
+ },
  "Sobre Maya, masajista en Berlín | Maya Secret": {
   "kind": "text",
   "pages": [
    "src/about.html"
   ],
-  "words": 11
+  "words": 8
  },
  "Soy una mujer elegante, femenina y segura de mí misma. Tengo mucha experiencia en el arte del masaje y lo realizo con dedicación, sensibilidad y profesionalidad. Ofrezco una experiencia de masaje sensual y consciente, en un ambiente privado, limpio y confortable.": {
   "kind": "text",
@@ -2222,7 +2229,7 @@
   "pages": [
    "src/servicios/masaje-erotico-clasico/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Clásico en Berlín": {
   "kind": "text",
@@ -2600,7 +2607,7 @@
   "pages": [
    "src/servicios/masaje-erotico-cuerpo-a-cuerpo/index.html"
   ],
-  "words": 12
+  "words": 9
  },
  "Masaje Erótico Cuerpo a Cuerpo en Berlín": {
   "kind": "text",
@@ -2769,7 +2776,7 @@
   "pages": [
    "src/servicios/masaje-erotico-lingam/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Lingam en Berlín": {
   "kind": "text",
@@ -2941,7 +2948,7 @@
   "pages": [
    "src/servicios/masaje-erotico-mutuo/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Mutuo en Berlín": {
   "kind": "text",
@@ -3109,7 +3116,7 @@
   "pages": [
    "src/servicios/masaje-erotico-nuru/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Nuru en Berlín": {
   "kind": "text",
@@ -3263,7 +3270,7 @@
   "pages": [
    "src/servicios/masaje-erotico-oriental/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Oriental en Berlín": {
   "kind": "text",
@@ -3431,7 +3438,7 @@
   "pages": [
    "src/servicios/masaje-erotico-sensual/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Sensual en Berlín": {
   "kind": "text",
@@ -3599,7 +3606,7 @@
   "pages": [
    "src/servicios/masaje-erotico-tantrico/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Tántrico en Berlín": {
   "kind": "text",
@@ -3760,7 +3767,7 @@
   "pages": [
    "src/servicios/masaje-erotico-yoni/index.html"
   ],
-  "words": 10
+  "words": 7
  },
  "Masaje Erótico Yoni en Berlín": {
   "kind": "text",

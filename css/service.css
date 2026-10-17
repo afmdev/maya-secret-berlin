@@ -729,7 +729,8 @@
 /* a lo ancho el alto sale de la anchura: retrato suave, mismo recorte en las
    nueve fotos sean verticales u horizontales. */
 @media(max-width:767px) {
-	.svc-main .svc-side-photo {
+	.svc-main .svc-side-photo,
+	.svc-main .svc-gal {
 		margin-top: 32px
 	}
 

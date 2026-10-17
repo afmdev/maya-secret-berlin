@@ -80,9 +80,11 @@
 })();
 
 /* En una columna la foto del aside caía después de todo el texto: se coloca
-   tras la entradilla, justo antes del primer separador. */
+   tras la entradilla, justo antes del primer separador. "Sobre Maya" no lleva
+   foto suelta sino la galería, y sube igual (solo en móvil: el bloque a dos
+   columnas de tableta está pensado para una foto fija). */
 (() => {
-	const foto = document.querySelector('.svc-side-photo');
+	const foto = document.querySelector('.svc-side-photo, .svc-gal');
 	const aside = document.querySelector('.svc-side');
 	const corte = document.querySelector('.svc-main .hero-rule');
 	if (!foto || !aside || !corte) return;
@@ -118,7 +120,7 @@
 	const tableta = matchMedia('(min-width:768px) and (max-width:1024px)');
 	const movil = matchMedia('(max-width:767px)');
 	const coloca = () => {
-		if (tableta.matches && titulo) return junta();
+		if (tableta.matches && titulo && foto.classList.contains('svc-side-photo')) return junta();
 		parte();
 		if (movil.matches) corte.before(foto);
 		else aside.prepend(foto);
