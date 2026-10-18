@@ -4,8 +4,10 @@
 
 	gsap.registerPlugin(ScrollTrigger, SplitText);
 
-	/* Smooth Scroll (equivale a SmoothScroll.js de Revoza) */
-	var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+	/* Smooth Scroll: misma inercia que Agntix, que monta
+	   ScrollSmoother.create({ smooth: 2, smoothTouch: .1 }). En Lenis eso es
+	   duration 2 con el easing expo de serie; en tactil se queda el nativo. */
+	var lenis = new Lenis({ duration: 2, smoothWheel: true });
 	lenis.on('scroll', ScrollTrigger.update);
 	gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
 	gsap.ticker.lagSmoothing(0);
