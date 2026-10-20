@@ -12,7 +12,7 @@ A static, multi-page site in four languages — German (primary, at the root), E
 
 - **One third-party request.** No CDN, no embeds, no cookies: fonts, images, jQuery, GSAP, Lenis and Swiper are all self-hosted. The single outbound script is the Scoby Analytics counter (`https://1x06e.s3y.io`, cookieless, German-hosted, no PII), injected into every page by `i18n_build.py` and declared in `/datenschutz`.
 - **18+ age gate (JMStV).** `js/age-gate.js` runs from `<head>` and veils the page before first paint; the visitor self-declares and the answer is stamped in `localStorage` for 30 days. Paired with the `age-de-meta-label` meta tag German filters read. It is a §5 self-declaration, not an identity-checking AVS.
-- **Nine service pages × four languages.** One folder per massage, named in its own language (`/massagen/nuru-massage/`, `/en/massages/nuru-massage/`, `/es/servicios/masaje-erotico-nuru/`, `/it/servizi/massaggio-nuru/`), all sharing `css/service.css`, the only stylesheet written from scratch.
+- **Nine service pages × four languages.** One folder per massage, named in its own language (`/massagen/nuru-massage/`, `/en/massages/nuru-massage/`, `/es/servicios/masaje-erotico-nuru/`, `/it/servizi/massaggio-nuru/`), all sharing `src/css/service.css`, the only stylesheet written from scratch.
 - **`hreflang` across all 52 pages,** with German as `x-default`, a `DE · EN · ES · IT` switcher in the header, and `LocalBusiness`, `Service` and `FAQPage` JSON-LD generated from the visible HTML of each page.
 - **Motion that respects the visitor.** Lenis smooth scroll plus GSAP `ScrollTrigger`/`SplitText` for per-character text reveals and image wipes; the whole module returns early under `prefers-reduced-motion: reduce`.
 - **CSS instead of JS where possible.** The "Masajes" mega menu with its hover photo panel is pure CSS, and so is the spotlight effect that restores colour under the pointer on grayscale photos (`@property` + a masked `backdrop-filter`).
@@ -28,6 +28,7 @@ scripts/i18n_extract.py # src/ -> i18n/strings.es.json
 scripts/i18n_build.py   # src/ + i18n/ -> the four language trees
 scripts/schema.py       # JSON-LD (business, service, FAQ) from each page's visible HTML
 scripts/imgs_build.py   # imgs/<photo>.jpg -> imgs/<photo>-<width>.webp (480/960/1440 + original)
+scripts/css_purge.py    # src/css/ -> css/ : drops unused rules from app.css, minifies them all
 
 index.html              # German home (primary language, lives at the root)
 ueber-maya.html         # erotische-massagen.html, faq.html
@@ -37,12 +38,13 @@ impressum.html          # legal pages: German only, shared by all languages
 datenschutz.html
 _redirects              # old Spanish root URLs -> /es/… (301) + per-language photo names (200, generated)
 sitemap.xml             # all 52 URLs with hreflang alternates and their photos (generated)
-css/app.css             # flattened theme CSS
-css/theme-palettes.css  # "Noir Vino" palette — colour tokens only
-css/service.css         # service page layout (hand-written)
-css/mega-menu.css       # CSS-only mega menu
-css/spotlight.css       # grayscale → colour under the cursor
-css/app-late.css        # rest of the CSS, split out of app.css
+src/css/app.css         # flattened theme CSS (Elementor dump)
+src/css/theme-palettes.css  # "Noir Vino" palette — colour tokens only
+src/css/service.css     # service page layout (hand-written)
+src/css/mega-menu.css   # CSS-only mega menu
+src/css/spotlight.css   # grayscale → colour under the cursor
+src/css/app-late.css    # rest of the CSS, split out of app.css
+css/                    # the same sheets, purged and minified (generated — edit src/css/)
 js/age-gate.js          # 18+ gate
 js/revoza-scroll.js     # Lenis + GSAP scroll choreography
 js/svc-lightbox.js      # <dialog> lightbox for service photos
