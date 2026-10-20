@@ -74,6 +74,31 @@ body.elementor-kit-5 {
 	background-size: cover;
 }
 
+/* La foto se recorta al ancho de la ventana, pero image-set elige por
+   densidad de pantalla: en un movil de 360 px y 2,6x el navegador se
+   bajaba la variante de 2744 px (138 KB) para pintar 945 px reales. A
+   esta anchura 960 px ya son esos 2,6x, y pesan 16 KB. Es el LCP. */
+@media (max-width: 480px) {
+	.elementor-19 .elementor-element.elementor-element-2610596:not(.elementor-motion-effects-element-type-background),
+	.elementor-19 .elementor-element.elementor-element-2610596 > .elementor-motion-effects-container .elementor-motion-effects-layer,
+	.elementor-19 .elementor-element.elementor-element-2610596 .elementor-motion-effects-container .elementor-motion-effects-layer {
+		background-image: image-set(
+			url("../imgs/maya-masaje-erotico-berlin-portada-480.webp") type("image/webp") 1x,
+			url("../imgs/maya-masaje-erotico-berlin-portada-960.webp") type("image/webp") 2x);
+	}
+}
+
+/* Tabletas: mismo razonamiento una talla mas arriba. */
+@media (min-width: 481px) and (max-width: 1024px) {
+	.elementor-19 .elementor-element.elementor-element-2610596:not(.elementor-motion-effects-element-type-background),
+	.elementor-19 .elementor-element.elementor-element-2610596 > .elementor-motion-effects-container .elementor-motion-effects-layer,
+	.elementor-19 .elementor-element.elementor-element-2610596 .elementor-motion-effects-container .elementor-motion-effects-layer {
+		background-image: image-set(
+			url("../imgs/maya-masaje-erotico-berlin-portada-960.webp") type("image/webp") 1x,
+			url("../imgs/maya-masaje-erotico-berlin-portada-1440.webp") type("image/webp") 2x);
+	}
+}
+
 /* La panorámica pasa al héroe, así que la banda con parallax se queda con la
    vertical, que quedó libre al borrar su sección. Sin repetir foto en la home. */
 .elementor-19 .elementor-element.elementor-element-c3b9fd6:not(.elementor-motion-effects-element-type-background),

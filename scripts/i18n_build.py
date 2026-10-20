@@ -152,7 +152,10 @@ LEGAL = {'Impressum': '/impressum', 'Datenschutz': '/datenschutz'}
 # El propio script manda la visita al cargar (autoLogging), no hace falta
 # llamar a nada. Las dos paginas legales se mantienen a mano y llevan esta
 # misma linea escrita dentro.
-SCOBY = '\t<script src="https://1x06e.s3y.io" defer></script>\n'
+# async y no defer: defer retrasa el DOMContentLoaded, y de el cuelga la
+# puerta de edad, que es lo primero que se pinta. La analitica no tiene que
+# llegar a tiempo para nada.
+SCOBY = '\t<script src="https://1x06e.s3y.io" async></script>\n'
 
 # Mensaje con el que se abre WhatsApp: deja claro el limite antes del primer
 # mensaje, asi que va en el idioma de la pagina.
@@ -306,6 +309,12 @@ PRELOAD = re.compile(r'<link rel="preload" as="image" href="(/imgs/maya-[^"]+\.j
 
 
 AGEGATE = re.compile(r'<script src="/?js/age-gate\.js"></script>')
+# Pegado a </head>: el JS de la puerta, que va en linea mas arriba, habla de
+# "el <body>" en sus comentarios y un regex suelto se colaba ahi.
+CUERPO = re.compile(r'(</head>\s*<body\b[^>]*>)', re.S)
+# JS propio y pequeno: inline sale mas barato que la peticion. /js/* va con
+# no-cache, asi que cada visita revalidaba tres ficheros de 2 KB.
+ENLINEA = re.compile(r'\t*<script src="/?js/(maya-ui|lang-switch|mobile-menu)\.js" defer></script>\n')
 
 
 def inline_agegate(src):
@@ -313,7 +322,24 @@ def inline_agegate(src):
     asi que su <script> bloquea el render si o si. En linea son 3 KB que ya
     vienen con el HTML en vez de una peticion mas en la ruta critica."""
     js = open('js/age-gate.js', encoding='utf-8').read().strip()
-    return AGEGATE.sub(lambda m: '<script>\n' + js + '\n\t</script>', src, count=1)
+    src = AGEGATE.sub(lambda m: '<script>\n' + js + '\n\t</script>', src, count=1)
+    # La puerta se pinta en cuanto se abre el <body>; si esperara al
+    # DOMContentLoaded esperaria tambien a todo el JS de la pagina. Se llama
+    # por window.: si el sello sigue vigente, mayaPuerta no llega a existir.
+    llamada = '\n\t<script>window.mayaPuerta && window.mayaPuerta()</script>'
+    return CUERPO.sub(lambda m: m.group(0) + llamada, src, count=1)
+
+
+def inline_js(src):
+    """Mete en el HTML los tres scripts propios (7 KB sin comprimir): tres
+    peticiones menos antes del DOMContentLoaded, que es lo que marca el ritmo
+    de esta pagina. Los 58 KB de GSAP se quedan fuera: esos se cargan solos
+    cuando la pagina ya esta cargada."""
+    def rep(m):
+        js = open(f'js/{m.group(1)}.js', encoding='utf-8').read().strip()
+        return '\t<script>\n' + js + '\n\t</script>\n'
+
+    return ENLINEA.sub(rep, src)
 
 
 def preload_webp(src):
@@ -483,6 +509,7 @@ def build_page(page, lang, dic):
     src = src.replace('</head>', SCOBY + '</head>', 1)
     src = lang_switcher(src, page, lang)
     src = mobile_submenu(src, page, lang)
+    src = inline_js(src)   # al final: lang_switcher y mobile_submenu anaden los suyos
     PAGE_IMGS[page, lang] = page_imgs(src)
     dest = out_path(page, lang)
     os.makedirs(os.path.dirname(dest) or '.', exist_ok=True)

@@ -92,16 +92,29 @@
 		// El velo tapaba tambien para el lector de pantalla; la capa opaca no,
 		// asi que el resto de la pagina se marca inerte: fuera del foco, del
 		// raton y del arbol de accesibilidad, pero presente en el documento.
-		var tapado = [].slice.call(document.body.children).filter(function (el) {
-			return el !== gate;
-		});
-		tapado.forEach(function (el) { el.inert = true; });
+		// La puerta se monta nada mas abrirse el <body>, cuando aun no hay
+		// hermanos que tapar, asi que esto espera a que el <body> este entero.
+		var tapado = [];
+		var abierta = true;
+		function tapar() {
+			if (!abierta) return;           // ya entro: no hay nada que tapar
+			tapado = [].slice.call(document.body.children).filter(function (el) {
+				return el !== gate;
+			});
+			tapado.forEach(function (el) { el.inert = true; });
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', tapar);
+		} else {
+			tapar();
+		}
 
 		var entrar = gate.querySelector('[data-agegate="in"]');
 		var salir = gate.querySelector('[data-agegate="out"]');
 
 		entrar.addEventListener('click', function () {
 			try { localStorage.setItem(KEY, Date.now()); } catch (e) { /* modo privado: vuelve a preguntar */ }
+			abierta = false;
 			html.classList.remove('maya-agegate-on', 'maya-agegate-ready');
 			tapado.forEach(function (el) { el.inert = false; });
 			gate.remove();
@@ -123,9 +136,22 @@
 		gate.focus();
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', montar);
-	} else {
+	// Desde el <head> no se puede tocar el <body>: todavia no existe. La
+	// llamada la hace un <script> nada mas abrirse el <body> (lo mete
+	// scripts/i18n_build.py), que es el primer instante en el que la puerta
+	// puede pintarse. Esperar al DOMContentLoaded significaba esperar a todo
+	// el JS diferido de la pagina, y la puerta es lo primero que se ve.
+	window.mayaPuerta = function () {
+		window.mayaPuerta = null;
 		montar();
+	};
+	// Red de seguridad: si una pagina no lleva esa llamada, la puerta sale
+	// igual (tarde, pero sale). Sin esto un olvido en el HTML la quita.
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.mayaPuerta) window.mayaPuerta();
+		});
+	} else {
+		window.mayaPuerta();
 	}
 })();

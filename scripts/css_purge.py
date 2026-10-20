@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Construye css/ desde src/css/: purga lo que no se usa y minifica.
+"""Construye css/site.css desde src/css/: purga, minifica y une.
 
-    src/css/app.css  (volcado de Elementor, 575 KB)  ->  css/app.css
-    src/css/*.css    (hojas escritas a mano)         ->  css/*.css
+    src/css/app.css  (volcado de Elementor, 575 KB)
+    src/css/*.css    (las cinco hojas escritas a mano)   ->  css/site.css
 
-Todo lo que sale de aqui va minificado (sin comentarios ni espacios): los
-comentarios y la indentacion viven en src/, que es donde se edita.
+Una sola hoja porque cinco <link> son cinco peticiones que bloquean el
+render, y en movil cada una cuesta ~300 ms de latencia aunque pese 1 KB.
+Todo sale minificado: los comentarios y la indentacion viven en src/.
 
 El criterio es el de PurgeCSS y es deliberadamente conservador: un selector
 sobrevive si TODAS sus clases e ids aparecen sueltos en algun HTML construido.
@@ -21,16 +22,21 @@ Lo llama scripts/i18n_build.py al final, cuando las 52 paginas ya existen.
 """
 import glob, os, re, sys
 
-# (origen, destino, podar). Solo app.css se poda: es el volcado de Elementor
-# y sobra el 60%. Las hojas escritas a mano se escribieron para esta web, asi
-# que ahi la poda solo seria una forma rebuscada de romper algo; se minifican.
+DESTINO = 'css/site.css'
+
+# (origen, podar) EN EL ORDEN DE LA CASCADA: es el mismo en el que iban los
+# <link>, y cambiarlo cambia quien gana. Solo app.css se poda: es el volcado
+# de Elementor y sobra el 60%. Las hojas escritas a mano se escribieron para
+# esta web, asi que ahi podar solo seria una forma rebuscada de romper algo.
 FUENTES = [
-    ('src/css/app.css',            'css/app.css',            True),
-    ('src/css/theme-palettes.css', 'css/theme-palettes.css', False),
-    ('src/css/app-late.css',       'css/app-late.css',       False),
-    ('src/css/mega-menu.css',      'css/mega-menu.css',      False),
-    ('src/css/service.css',        'css/service.css',        False),
-    ('src/css/spotlight.css',      'css/spotlight.css',      False),
+    ('src/css/app.css',            True),
+    ('src/css/app-late.css',       False),
+    ('src/css/theme-palettes.css', False),
+    ('src/css/mega-menu.css',      False),
+    ('src/css/spotlight.css',      False),
+    # service.css solo la usaban las 36 paginas de ritual, pero pesa 2,6 KB
+    # comprimida: menos que la peticion extra que costaba servirla aparte.
+    ('src/css/service.css',        False),
 ]
 
 # Clases que el JS pone en marcha y que por tanto no estan en el HTML servido.
@@ -270,20 +276,27 @@ def main():
         raise SystemExit(f'solo {len(paginas)} paginas construidas: ejecuta antes i18n_build.py')
     vistos = candidatos(paginas)
     print(f'{len(paginas)} paginas, {len(vistos)} nombres en uso')
-    for origen, destino, podar in FUENTES:
+    trozos, total = [], 0
+    for origen, podar in FUENTES:
         css = open(origen, encoding='utf-8').read()
         fuera = []
         limpio = purgar(trocear(sin_comentarios(css)), vistos, fuera, podar)
         if not limpio.strip():
             raise SystemExit(f'{origen} se ha quedado vacio: algo va mal')
-        os.makedirs(os.path.dirname(destino), exist_ok=True)
-        open(destino, 'w', encoding='utf-8').write(limpio)
+        trozos.append(limpio)
+        total += len(css)
         antes, ahora = len(css) / 1024, len(limpio) / 1024
-        print(f'  {os.path.basename(destino):<20} {antes:6.0f} KB -> {ahora:5.0f} KB '
+        print(f'  {os.path.basename(origen):<20} {antes:6.0f} KB -> {ahora:5.0f} KB '
               f'({100 - ahora / antes * 100:2.0f}% menos){"" if podar else "  [solo minificado]"}')
         if '--informe' in sys.argv and podar:
             for sel, n in fuera[:60]:
                 print(f'    -{n:3d}  {sel[:150]}')
+    # @charset solo vale al principio del fichero: unido va al medio y el
+    # navegador se lo salta con un aviso. El HTML ya declara UTF-8.
+    unido = re.sub(r'@charset [^;]+;', '', ''.join(trozos))
+    os.makedirs(os.path.dirname(DESTINO), exist_ok=True)
+    open(DESTINO, 'w', encoding='utf-8').write(unido)
+    print(f'  {"-" * 20} {total / 1024:6.0f} KB -> {len(unido) / 1024:5.0f} KB  {DESTINO}')
 
 
 if __name__ == '__main__':

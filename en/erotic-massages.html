@@ -101,16 +101,29 @@
 		// El velo tapaba tambien para el lector de pantalla; la capa opaca no,
 		// asi que el resto de la pagina se marca inerte: fuera del foco, del
 		// raton y del arbol de accesibilidad, pero presente en el documento.
-		var tapado = [].slice.call(document.body.children).filter(function (el) {
-			return el !== gate;
-		});
-		tapado.forEach(function (el) { el.inert = true; });
+		// La puerta se monta nada mas abrirse el <body>, cuando aun no hay
+		// hermanos que tapar, asi que esto espera a que el <body> este entero.
+		var tapado = [];
+		var abierta = true;
+		function tapar() {
+			if (!abierta) return;           // ya entro: no hay nada que tapar
+			tapado = [].slice.call(document.body.children).filter(function (el) {
+				return el !== gate;
+			});
+			tapado.forEach(function (el) { el.inert = true; });
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', tapar);
+		} else {
+			tapar();
+		}
 
 		var entrar = gate.querySelector('[data-agegate="in"]');
 		var salir = gate.querySelector('[data-agegate="out"]');
 
 		entrar.addEventListener('click', function () {
 			try { localStorage.setItem(KEY, Date.now()); } catch (e) { /* modo privado: vuelve a preguntar */ }
+			abierta = false;
 			html.classList.remove('maya-agegate-on', 'maya-agegate-ready');
 			tapado.forEach(function (el) { el.inert = false; });
 			gate.remove();
@@ -132,10 +145,23 @@
 		gate.focus();
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', montar);
-	} else {
+	// Desde el <head> no se puede tocar el <body>: todavia no existe. La
+	// llamada la hace un <script> nada mas abrirse el <body> (lo mete
+	// scripts/i18n_build.py), que es el primer instante en el que la puerta
+	// puede pintarse. Esperar al DOMContentLoaded significaba esperar a todo
+	// el JS diferido de la pagina, y la puerta es lo primero que se ve.
+	window.mayaPuerta = function () {
+		window.mayaPuerta = null;
 		montar();
+	};
+	// Red de seguridad: si una pagina no lleva esa llamada, la puerta sale
+	// igual (tarde, pero sale). Sin esto un olvido en el HTML la quita.
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.mayaPuerta) window.mayaPuerta();
+		});
+	} else {
+		window.mayaPuerta();
 	}
 })();
 	</script>
@@ -146,10 +172,7 @@
 		content="Every massage from Maya Secret in Berlin: classic, tantric, body-to-body, nuru, lingam, yoni, sensual, oriental and mutual. By appointment only." />
 	<meta name="robots" content="max-image-preview:large" />
 
-	<link rel="stylesheet" href="/css/app.css" media="all" />
-	<link rel="stylesheet" href="/css/app-late.css" media="all" />
-	<link rel="stylesheet" href="/css/theme-palettes.css" media="all" />
-	<link rel="stylesheet" href="/css/mega-menu.css" media="all" />
+	<link rel="stylesheet" href="/css/site.css" media="all" />
 	<link rel="canonical" href="https://www.mayaerotikmassage.com/en/erotic-massages" />
 	<link rel="alternate" hreflang="de" href="https://www.mayaerotikmassage.com/erotische-massagen" />
 	<link rel="alternate" hreflang="en" href="https://www.mayaerotikmassage.com/en/erotic-massages" />
@@ -186,11 +209,12 @@
 	<link rel="manifest" href="/imgs/favicon/manifest.json" />
 	<meta name="msapplication-TileImage" content="imgs/favicon/ms-icon-144x144.png" />
 	<meta name="msapplication-config" content="imgs/favicon/browserconfig.xml" />
-	<script src="https://1x06e.s3y.io" defer></script>
+	<script src="https://1x06e.s3y.io" async></script>
 </head>
 
 <body
 	class="page-template-default page full header-layout-logo-menu has-page-header no-middle-header responsive-layout mayaerotikmassage-is-elementor elementor-active elementor-pro-active mayaerotikmassage-wc-cart-empty wc-product-gallery-slider-active mayaerotikmassage-font-smoothing layout-full elementor-default elementor-kit-5 elementor-page elementor-page-19">
+	<script>window.mayaPuerta && window.mayaPuerta()</script>
 	<a href="#" aria-hidden="true" rel="nofollow noopener"
 		style="display: none !important; visibility: hidden !important"></a>
 	<div id="arriba"></div>
@@ -1950,7 +1974,116 @@
 	<!-- El stack de jQuery + Elementor (~330 KB) se fue: lo que de verdad
 	     hacia aqui -entrada de los bloques, hamburguesa, cabecera pegajosa
 	     y subir arriba- vive ahora en js/maya-ui.js. -->
-	<script src="/js/maya-ui.js" defer></script>
+	<script>
+/* Lo poco que hacia en esta web el stack de jQuery + Elementor (~330 KB),
+   en vanilla: la entrada de los bloques, la hamburguesa, la cabecera que se
+   esconde al bajar y el boton de subir.
+
+   El resto no lo necesitaba: el acordeon del FAQ y el selector de idioma son
+   <details>, el contacto es <dialog>, el mega menu abre por :hover en CSS y
+   los reveals de texto e imagen los hace js/revoza-scroll.js con GSAP. */
+(() => {
+	'use strict';
+
+	/* 1. Entrada de los bloques ------------------------------------------
+	   Elementor deja .elementor-invisible{visibility:hidden} y al entrar en
+	   pantalla lo cambia por "animated <nombre>"; los @keyframes (fadeIn,
+	   zoomIn, slideInUp) ya viven en la hoja. */
+	const ocultos = document.querySelectorAll('.elementor-invisible');
+	if (ocultos.length) {
+		const mostrar = el => {
+			let cfg = {};
+			try { cfg = JSON.parse(el.dataset.settings || '{}'); } catch (e) { /* sin ajustes */ }
+			// Los widgets guardan la animacion en _animation y los contenedores
+			// en animation (72 bloques, casi todos slideInUp): leer solo la
+			// primera los dejaba a todos con el fadeIn de reserva.
+			const entrada = () => {
+				el.classList.add('animated', cfg._animation || cfg.animation || 'fadeIn');
+				el.classList.remove('elementor-invisible');
+			};
+			const espera = cfg._animation_delay || cfg.animation_delay || 0;
+			espera ? setTimeout(entrada, espera) : entrada();
+		};
+		const ojo = new IntersectionObserver((entradas, obs) => {
+			entradas.forEach(e => {
+				if (!e.isIntersecting) return;
+				mostrar(e.target);
+				obs.unobserve(e.target);
+			});
+		}, { rootMargin: '0px 0px -8% 0px' });
+		ocultos.forEach(el => ojo.observe(el));
+	}
+
+	/* 2. Hamburguesa: el panel lo abre y lo cierra el CSS del tema con
+	   .elementor-active sobre el boton (selector hermano en app.css). El panel
+	   va en absoluto bajo un widget estrecho; con --stretch Elementor lo abria
+	   a lo ancho de la ventana, que es lo que hace ensanchar(). */
+	document.querySelectorAll('.elementor-menu-toggle').forEach(boton => {
+		const panel = boton.nextElementSibling;
+		const estira = panel && boton.closest('.elementor-nav-menu--stretch');
+		const ensanchar = () => {
+			const origen = panel.offsetParent ? panel.offsetParent.getBoundingClientRect().left : 0;
+			panel.style.left = `${-origen}px`;
+			panel.style.width = `${document.documentElement.clientWidth}px`;
+		};
+		boton.addEventListener('click', () => {
+			const abierto = boton.classList.toggle('elementor-active');
+			boton.setAttribute('aria-expanded', String(abierto));
+			if (estira && abierto) ensanchar();
+		});
+		if (estira) {
+			addEventListener('resize', () => {
+				if (boton.classList.contains('elementor-active')) ensanchar();
+			});
+		}
+	});
+
+	/* 3. Cabecera: fija por CSS; estas dos clases la esconden al bajar y la
+	   devuelven (con el fondo difuminado) al subir. */
+	const cabecera = document.querySelector(
+		'.mayaerotikmassage-sticky-header:not(.mayaerotikmassage-sticky-header--spacer)');
+	if (cabecera) {
+		const OCULTA = 'mayaerotikmassage-sticky-header--fixed-hidden';
+		const VISIBLE = 'mayaerotikmassage-sticky-header--fixed-shown';
+		let ultimo = window.scrollY;
+		let pedido = false;
+		const pintar = () => {
+			pedido = false;
+			const y = window.scrollY;
+			if (y < 10) {
+				cabecera.classList.remove(OCULTA, VISIBLE);
+			} else if (Math.abs(y - ultimo) > 4) {
+				const baja = y > ultimo;
+				cabecera.classList.toggle(OCULTA, baja);
+				cabecera.classList.toggle(VISIBLE, !baja);
+			}
+			ultimo = y;
+		};
+		addEventListener('scroll', () => {
+			if (pedido) return;
+			pedido = true;
+			requestAnimationFrame(pintar);
+		}, { passive: true });
+		pintar();
+	}
+
+	/* 4. Subir arriba (lo hacia js/low-priority.js). */
+	const subir = document.getElementById('scroll-to-top');
+	if (subir) {
+		const colocar = () => {
+			const visible = window.scrollY > innerHeight / 2;
+			subir.style.opacity = visible ? '1' : '';
+			subir.style.transform = `translate3d(0, ${visible ? '0' : '100%'}, 0)`;
+		};
+		addEventListener('scroll', colocar, { passive: true });
+		colocar();
+		subir.addEventListener('click', e => {
+			e.preventDefault();
+			scrollTo({ top: 0, behavior: 'smooth' });
+		});
+	}
+})();
+	</script>
 
 
 
@@ -1991,15 +2124,167 @@
 		</div>
 	</dialog>
 
-	<!-- Efectos de scroll (Revoza) -->
-	<script src="/js/vendor/lenis.min.js"></script>
-	<script src="/js/vendor/gsap.min.js"></script>
-	<script src="/js/vendor/ScrollTrigger.min.js"></script>
-	<script src="/js/vendor/SplitText.min.js"></script>
-	<script src="/js/revoza-scroll.js" defer></script>
+	<!-- La coreografia de scroll son 58 KB de JS que no pintan nada y que, en
+	     linea, retrasaban el DOMContentLoaded: con el, la puerta de edad, que es
+	     lo primero que se ve. Se cargan con la pagina ya cargada y async=false
+	     los mantiene en orden (lenis -> gsap -> plugins -> coreografia). -->
+	<script>
+		addEventListener('load', function () {
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+			['/js/vendor/lenis.min.js', '/js/vendor/gsap.min.js', '/js/vendor/ScrollTrigger.min.js',
+				'/js/vendor/SplitText.min.js', '/js/revoza-scroll.js'].forEach(function (ruta) {
+				var s = document.createElement('script');
+				s.src = ruta;
+				s.async = false;   // insertados a mano: sin esto se ejecutan en desorden
+				document.head.appendChild(s);
+			});
+		});
+	</script>
 	<script>document.querySelectorAll(".js-year").forEach(n => n.textContent = new Date().getFullYear());</script>
-	<script src="/js/lang-switch.js" defer></script>
-	<script src="/js/mobile-menu.js" defer></script>
+	<script>
+/* Desplegable de idioma. El <details> abre y cierra solo, pero de golpe: aqui
+   se le pone la animacion (al abrir, la clase llega un fotograma despues; al
+   cerrar, el panel se va antes de plegar el <details>), cerrar al pulsar
+   fuera, cerrar con Escape y no dejar dos abiertos a la vez (hay uno por
+   cabecera). */
+(() => {
+	const boxes = document.querySelectorAll('.maya-lang__box');
+	if (!boxes.length) return;
+
+	const suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	const abrir = box => {
+		box.open = true;
+		// Con la clase puesta en el mismo fotograma no hay transicion: el panel
+		// nacería ya en su sitio.
+		requestAnimationFrame(() => box.classList.add('is-open'));
+	};
+
+	const cerrar = box => {
+		if (!box.open) return;
+		box.classList.remove('is-open');
+		if (!suave) {
+			box.open = false;
+			return;
+		}
+		// El <details> se pliega cuando el panel ha terminado de subir; el
+		// temporizador es el plan B si la transicion no llega a dispararse.
+		const panel = box.querySelector('.maya-lang__panel');
+		let plegado = false;
+		const plegar = () => {
+			if (plegado) return;
+			plegado = true;
+			box.open = false;
+		};
+		panel.addEventListener('transitionend', e => {
+			if (e.propertyName === 'opacity') plegar();
+		}, { once: true });
+		setTimeout(plegar, 300);
+	};
+
+	const cerrarTodos = excepto => boxes.forEach(b => {
+		if (b !== excepto) cerrar(b);
+	});
+
+	boxes.forEach(box => {
+		box.querySelector('summary').addEventListener('click', e => {
+			e.preventDefault(); // el <details> abriria de golpe
+			if (box.open) {
+				cerrar(box);
+			} else {
+				cerrarTodos(box);
+				abrir(box);
+			}
+		});
+	});
+
+	document.addEventListener('click', e => {
+		if (!e.target.closest('.maya-lang__box')) cerrarTodos(null);
+	});
+
+	document.addEventListener('keydown', e => {
+		if (e.key !== 'Escape') return;
+		const abierto = document.querySelector('.maya-lang__box[open]');
+		if (!abierto) return;
+		cerrar(abierto);
+		abierto.querySelector('summary').focus();
+	});
+})();
+	</script>
+	<script>
+/* Menu movil: las dos cosas que la plantilla no trae.
+
+   1. Entrada escalonada. El panel ya desliza, pero los items estan a plena
+      opacidad desde el primer fotograma y el contenido aparece de golpe: la
+      clase maya-menu-open los va soltando uno detras de otro (el retardo lo
+      pone el CSS).
+   2. El item con submenu. SmartMenus se queda el primer toque del enlace
+      padre para desplegar, asi que "Erotische Massagen" no llevaba a ninguna
+      parte. Aqui el enlace navega y el boton +/- (lo pone scripts/i18n_build.py)
+      abre y cierra el submenu, como el acordeon del FAQ. */
+(() => {
+	const navs = document.querySelectorAll('.elementor-nav-menu--dropdown.elementor-nav-menu__container');
+	if (!navs.length) return;
+
+	// --- 1. Entrada escalonada ------------------------------------------
+	// El panel no avisa de que se abre: quien lleva la cuenta es la hamburguesa,
+	// que recibe la clase elementor-active.
+	document.querySelectorAll('.elementor-menu-toggle').forEach(hamburguesa => {
+		const nav = hamburguesa.parentElement
+			&& hamburguesa.parentElement.querySelector('.elementor-nav-menu--dropdown.elementor-nav-menu__container');
+		if (!nav) return;
+		new MutationObserver(() => {
+			nav.classList.toggle('maya-menu-open', hamburguesa.classList.contains('elementor-active'));
+		}).observe(hamburguesa, { attributes: true, attributeFilter: ['class'] });
+	});
+
+	// --- 2. Submenu con boton -------------------------------------------
+	const submenu = li => li.querySelector(':scope > ul');
+
+	const desplegar = (li, abrir) => {
+		const ul = submenu(li);
+		const boton = li.querySelector(':scope > .maya-sub');
+		if (!ul) return;
+
+		ul.style.display = 'block';
+		ul.style.height = abrir ? '0px' : ul.scrollHeight + 'px';
+		ul.getBoundingClientRect(); // fuerza el calculo: sin esto no hay transicion
+		ul.style.height = abrir ? ul.scrollHeight + 'px' : '0px';
+		li.classList.toggle('is-open', abrir);
+		if (boton) boton.setAttribute('aria-expanded', String(abrir));
+
+		ul.addEventListener('transitionend', e => {
+			if (e.propertyName !== 'height') return;
+			// Abierto queda en auto para que crezca si cambia el contenido;
+			// cerrado se limpia y vuelve a mandar el CSS del tema.
+			ul.style.height = abrir ? 'auto' : '';
+			if (!abrir) ul.style.display = '';
+		}, { once: true });
+	};
+
+	navs.forEach(nav => {
+		// En captura y sobre el <nav>: asi corre antes que los manejadores que
+		// SmartMenus engancha en el propio enlace.
+		nav.addEventListener('click', e => {
+			const boton = e.target.closest('.maya-sub');
+			if (boton) {
+				e.preventDefault();
+				e.stopPropagation();
+				const li = boton.parentElement;
+				desplegar(li, !li.classList.contains('is-open'));
+				return;
+			}
+			const enlace = e.target.closest('a[data-maya-href]');
+			if (enlace) {
+				// SmartMenus deja el href en "#": se devuelve y se le corta el
+				// paso para que el navegador haga lo suyo, ir a la pagina.
+				e.stopPropagation();
+				enlace.setAttribute('href', enlace.dataset.mayaHref);
+			}
+		}, true);
+	});
+})();
+	</script>
 </body>
 
 </html>

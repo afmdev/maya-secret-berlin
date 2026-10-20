@@ -13,20 +13,25 @@
 	<meta name="description"
 		content="Masaje erótico y tántrico exclusivo en Berlín. Visitas a domicilio y hotel, con discreción, solo con cita previa. Sin servicios sexuales." />
 	<!-- El LCP de la portada es el fondo del heroe, que vive en un image-set de
-	     theme-palettes.css y no se descubre hasta parsear el CSS. Mismas dos
-	     variantes y mismos descriptores que alli. -->
-	<link rel="preload" as="image" type="image/webp"
+	     theme-palettes.css y no se descubre hasta parsear el CSS. Los tres
+	     tramos son los mismos que alli: si el preload pidiera otra variante,
+	     el navegador se bajaria dos fotos en vez de una. -->
+	<link rel="preload" as="image" type="image/webp" media="(max-width: 480px)"
+		href="imgs/maya-masaje-erotico-berlin-portada-480.webp"
+		imagesrcset="imgs/maya-masaje-erotico-berlin-portada-480.webp 1x, imgs/maya-masaje-erotico-berlin-portada-960.webp 2x"
+		fetchpriority="high" />
+	<link rel="preload" as="image" type="image/webp" media="(min-width: 481px) and (max-width: 1024px)"
+		href="imgs/maya-masaje-erotico-berlin-portada-960.webp"
+		imagesrcset="imgs/maya-masaje-erotico-berlin-portada-960.webp 1x, imgs/maya-masaje-erotico-berlin-portada-1440.webp 2x"
+		fetchpriority="high" />
+	<link rel="preload" as="image" type="image/webp" media="(min-width: 1025px)"
 		href="imgs/maya-masaje-erotico-berlin-portada-1440.webp"
 		imagesrcset="imgs/maya-masaje-erotico-berlin-portada-1440.webp 1x, imgs/maya-masaje-erotico-berlin-portada-2744.webp 2x"
 		fetchpriority="high" />
 	<meta name="robots" content="max-image-preview:large" />
 	<meta name="msvalidate.01" content="649191725060C584F4733DDBCAD67BBF" />
 
-	<link rel="stylesheet" href="css/app.css" media="all" />
-	<link rel="stylesheet" href="css/app-late.css" media="all" />
-	<link rel="stylesheet" href="css/theme-palettes.css" media="all" />
-	<link rel="stylesheet" href="css/mega-menu.css" media="all" />
-	<link rel="stylesheet" href="css/spotlight.css" media="all" />
+	<link rel="stylesheet" href="css/site.css" media="all" />
 	<link rel="canonical" href="https://www.mayaerotikmassage.com/" />
 	<meta property="og:locale" content="es_ES" />
 	<meta property="og:type" content="website" />
@@ -2058,12 +2063,22 @@
 		</div>
 	</dialog>
 
-	<!-- Efectos de scroll (Revoza) -->
-	<script src="js/vendor/lenis.min.js"></script>
-	<script src="js/vendor/gsap.min.js"></script>
-	<script src="js/vendor/ScrollTrigger.min.js"></script>
-	<script src="js/vendor/SplitText.min.js"></script>
-	<script src="js/revoza-scroll.js" defer></script>
+	<!-- La coreografia de scroll son 58 KB de JS que no pintan nada y que, en
+	     linea, retrasaban el DOMContentLoaded: con el, la puerta de edad, que es
+	     lo primero que se ve. Se cargan con la pagina ya cargada y async=false
+	     los mantiene en orden (lenis -> gsap -> plugins -> coreografia). -->
+	<script>
+		addEventListener('load', function () {
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+			['/js/vendor/lenis.min.js', '/js/vendor/gsap.min.js', '/js/vendor/ScrollTrigger.min.js',
+				'/js/vendor/SplitText.min.js', '/js/revoza-scroll.js'].forEach(function (ruta) {
+				var s = document.createElement('script');
+				s.src = ruta;
+				s.async = false;   // insertados a mano: sin esto se ejecutan en desorden
+				document.head.appendChild(s);
+			});
+		});
+	</script>
 	<script>document.querySelectorAll(".js-year").forEach(n => n.textContent = new Date().getFullYear());</script>
 </body>
 

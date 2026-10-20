@@ -11,7 +11,7 @@
 	/* 1. Entrada de los bloques ------------------------------------------
 	   Elementor deja .elementor-invisible{visibility:hidden} y al entrar en
 	   pantalla lo cambia por "animated <nombre>"; los @keyframes (fadeIn,
-	   zoomIn, slideInUp) ya viven en css/app.css. */
+	   zoomIn, slideInUp) ya viven en la hoja. */
 	const ocultos = document.querySelectorAll('.elementor-invisible');
 	if (ocultos.length) {
 		const mostrar = el => {

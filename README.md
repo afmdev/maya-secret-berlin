@@ -28,7 +28,7 @@ scripts/i18n_extract.py # src/ -> i18n/strings.es.json
 scripts/i18n_build.py   # src/ + i18n/ -> the four language trees
 scripts/schema.py       # JSON-LD (business, service, FAQ) from each page's visible HTML
 scripts/imgs_build.py   # imgs/<photo>.jpg -> imgs/<photo>-<width>.webp (480/960/1440 + original)
-scripts/css_purge.py    # src/css/ -> css/ : drops unused rules from app.css, minifies them all
+scripts/css_purge.py    # src/css/*.css -> css/site.css : purges, minifies and merges into one sheet
 
 index.html              # German home (primary language, lives at the root)
 ueber-maya.html         # erotische-massagen.html, faq.html
@@ -44,7 +44,7 @@ src/css/service.css     # service page layout (hand-written)
 src/css/mega-menu.css   # CSS-only mega menu
 src/css/spotlight.css   # grayscale → colour under the cursor
 src/css/app-late.css    # rest of the CSS, split out of app.css
-css/                    # the same sheets, purged and minified (generated — edit src/css/)
+css/site.css            # all six, purged, minified and merged — one request (generated)
 js/age-gate.js          # 18+ gate
 js/revoza-scroll.js     # Lenis + GSAP scroll choreography
 js/svc-lightbox.js      # <dialog> lightbox for service photos

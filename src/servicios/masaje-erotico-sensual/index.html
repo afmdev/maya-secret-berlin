@@ -18,11 +18,7 @@
 		fetchpriority="high" />
 	<meta name="robots" content="max-image-preview:large" />
 
-	<link rel="stylesheet" href="../../css/app.css" media="all" />
-	<link rel="stylesheet" href="../../css/app-late.css" media="all" />
-	<link rel="stylesheet" href="../../css/theme-palettes.css" media="all" />
-	<link rel="stylesheet" href="../../css/mega-menu.css" media="all" />
-	<link rel="stylesheet" href="../../css/service.css" media="all" />
+	<link rel="stylesheet" href="../../css/site.css" media="all" />
 
 
 
@@ -1442,13 +1438,22 @@
 		</div>
 	</dialog>
 
-	<!-- Efectos de scroll (Revoza) -->
-	<script src="../../js/vendor/lenis.min.js"></script>
-	<script src="../../js/vendor/gsap.min.js"></script>
-	<script src="../../js/vendor/ScrollTrigger.min.js"></script>
-	<script src="../../js/vendor/SplitText.min.js"></script>
-	<script src="../../js/revoza-scroll.js" defer></script>
-	<script src="../../js/svc-lightbox.js" defer></script>
+	<!-- La coreografia de scroll son 58 KB de JS que no pintan nada y que, en
+	     linea, retrasaban el DOMContentLoaded: con el, la puerta de edad, que es
+	     lo primero que se ve. Se cargan con la pagina ya cargada y async=false
+	     los mantiene en orden (lenis -> gsap -> plugins -> coreografia). -->
+	<script>
+		addEventListener('load', function () {
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+			['/js/vendor/lenis.min.js', '/js/vendor/gsap.min.js', '/js/vendor/ScrollTrigger.min.js',
+				'/js/vendor/SplitText.min.js', '/js/revoza-scroll.js'].forEach(function (ruta) {
+				var s = document.createElement('script');
+				s.src = ruta;
+				s.async = false;   // insertados a mano: sin esto se ejecutan en desorden
+				document.head.appendChild(s);
+			});
+		});
+	</script>
 	<script>document.querySelectorAll(".js-year").forEach(n => n.textContent = new Date().getFullYear());</script>
 </body>
 
